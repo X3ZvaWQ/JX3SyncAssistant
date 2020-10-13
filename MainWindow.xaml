@@ -7,7 +7,7 @@
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
         Title="JX3SyncAssistant v0.1.0" Height="256" Width="663"
-        ResizeMode="NoResize"
+        ResizeMode="CanMinimize"
         FontSize="16" Icon="20201013105745897_easyicon_net_128.ico"
     >
 
