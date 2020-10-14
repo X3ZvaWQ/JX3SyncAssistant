@@ -1,22 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
-using System.IO.Compression;
-using System.IO.Packaging;
-using System.Windows.Resources;
 using System.Net;
 
 namespace JX3SyncAssistant
@@ -40,17 +26,11 @@ namespace JX3SyncAssistant
                 SourceRoleGrid.Visibility = Visibility.Visible;
                 try
                 {
-                    RegistryKey localMachine = Environment.Is64BitOperatingSystem == true ?
-                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
-                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-                    string registry_key = SourceSelect.SelectedIndex == 0 ? @"SOFTWARE\JX3Installer" : @"SOFTWARE\JX3Installer_EXP";
-                    string result = localMachine.OpenSubKey(registry_key, false).GetValue("InstPath").ToString();
-
-                    SourceFolder.Text = result + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd\userdata" : @"\Game\JX3_EXP\bin\zhcn_exp\userdata");
+                    SourceFolder.Text = Helper.GetGameFolderFromReg(SourceSelect.SelectedIndex != 0) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd\userdata" : @"\Game\JX3_EXP\bin\zhcn_exp\userdata");
                 }
                 catch
                 {
-                    SourceFolder.Text = "";
+                    SourceFolder.Text = "获取程序路径失败，请手动选择";
                 }
             }
         }
@@ -147,17 +127,11 @@ namespace JX3SyncAssistant
                 TargetRoleGrid.Visibility = Visibility.Visible;
                 try
                 {
-                    RegistryKey localMachine = Environment.Is64BitOperatingSystem == true ?
-                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
-                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-                    string registry_key = TargetSelect.SelectedIndex == 0 ? @"SOFTWARE\JX3Installer" : @"SOFTWARE\JX3Installer_EXP";
-                    string result = localMachine.OpenSubKey(registry_key, false).GetValue("InstPath").ToString();
-
-                    TargetFolder.Text = result + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd\userdata" : @"\Game\JX3_EXP\bin\zhcn_exp\userdata");
+                    TargetFolder.Text = Helper.GetGameFolderFromReg(TargetSelect.SelectedIndex != 0) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd\userdata" : @"\Game\JX3_EXP\bin\zhcn_exp\userdata");
                 }
                 catch
                 {
-                    TargetFolder.Text = "";
+                    TargetFolder.Text = "获取程序路径失败，请手动选择";
                 }
             }
         }
@@ -256,7 +230,7 @@ namespace JX3SyncAssistant
                     try
                     {
                         string userdataFolder = SourceFolder.Text + "\\" + (SourceAccounts.SelectedItem as Label).Content + "\\" + (SourceAreas.SelectedItem as Label).Content + "\\" + (SourceServers.SelectedItem as Label).Content + "\\" + (SourceRoles.SelectedItem as Label).Content;
-                        GetZipFromUserdata(userdataFolder, "userdata.zip");
+                        Helper.GetZipFromUserdata(userdataFolder, "userdata.zip");
                     }
                     catch
                     {
@@ -278,7 +252,7 @@ namespace JX3SyncAssistant
                     string userdataFolder = TargetFolder.Text + "\\" + (TargetAccounts.SelectedItem as Label).Content + "\\" + (TargetAreas.SelectedItem as Label).Content + "\\" + (TargetServers.SelectedItem as Label).Content + "\\" + (TargetRoles.SelectedItem as Label).Content;
                     try
                     {
-                        UnpackToUserdata("userdata.zip", userdataFolder);
+                        Helper.UnpackToUserdata("userdata.zip", userdataFolder);
                     }
                     catch
                     {
@@ -303,76 +277,6 @@ namespace JX3SyncAssistant
             }
 
             MessageBox.Show("没有意外的话应该成功了吧（？", "不太确定的提示框");
-        }
-
-        private void GetZipFromUserdata(string SourceData, string zip)
-        {
-            string SourceDataFolder = SourceData;
-            string[] files =
-            {
-                "addon.jx3dat",
-                "CoinShopOutfitData.jx3dat",
-                "custom.dat",
-                "custom.dat.addon",
-                "userpreferences.jx3dat"
-            };
-            try
-            {
-                using (FileStream fs = new FileStream(zip, FileMode.Create))
-                using (ZipArchive zipArchive = new ZipArchive(fs, ZipArchiveMode.Create))
-                {
-                    foreach (string file in files)
-                    {
-                        try
-                        {
-                            zipArchive.CreateEntryFromFile(SourceDataFolder + "\\" + file, file);
-                        }
-                        catch (Exception)
-                        {
-                            Console.WriteLine(SourceDataFolder + "\\" + file);
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-    
-        private void UnpackToUserdata(string zip, string dir)
-        {
-            using (FileStream fs = new FileStream(zip, FileMode.Open))
-            {
-                using (ZipArchive zipArchive = new ZipArchive(fs, ZipArchiveMode.Read))
-                {
-                    try
-                    {
-                        string[] files =
-                        {
-                            "addon.jx3dat",
-                            "CoinShopOutfitData.jx3dat",
-                            "custom.dat",
-                            "custom.dat.addon",
-                            "userpreferences.jx3dat",   
-                        };
-                        foreach(string file in files)
-                        {
-                            File.Delete(dir + "\\" + file);
-                        }
-                        File.Delete(dir + @"\\userpreferencesasync.jx3dat");
-                        Directory.CreateDirectory(dir);
-                        foreach (var it in zipArchive.Entries)
-                        {
-                            it.ExtractToFile(dir + "\\" + it.Name);
-                        }
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Unpack Error");
-                    }
-                }
-            }
         }
 
         private void SourceBrowse_Click(object sender, RoutedEventArgs e)

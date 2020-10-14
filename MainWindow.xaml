@@ -6,16 +6,16 @@
         xmlns:local="clr-namespace:JX3SyncAssistant"
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="JX3SyncAssistant v0.1.0" Height="256" Width="663"
+        Title="JX3SyncAssistant v0.1.0" Height="262" Width="703"
         ResizeMode="CanMinimize"
         FontSize="16" Icon="20201013105745897_easyicon_net_128.ico"
     >
 
     <Grid Margin="0,0,0,-8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200*"/>
-            <ColumnDefinition Width="100*"/>
-            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="263*"/>
+            <ColumnDefinition Width="168*"/>
+            <ColumnDefinition Width="266*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20*"/>
@@ -24,7 +24,7 @@
         <ComboBox Name="SourceSelect"  HorizontalAlignment="Left" Height="31" Margin="64,10,0,0" VerticalAlignment="Top" Width="156" Grid.Column="0" Grid.Row="0" SelectionChanged="SourceSelect_SelectionChanged">
             <Label Content="正式服角色"/>
             <Label Content="测试服角色"/>
-            <!-- <Label Content="本地数据"/> -->
+            <Label Content="本地数据"/>
             <!-- <Label Content="云端数据"/> -->
             <!-- <Label Content="正式服账号下所有角色"/> -->
             <!-- <Label Content="测试服账号下所有角色"/> -->
@@ -32,14 +32,14 @@
         <ComboBox Name="TargetSelect" HorizontalAlignment="Left" Height="31" Margin="55,10,0,0" VerticalAlignment="Top" Width="173" Grid.Column="2" Grid.Row="0" SelectionChanged="TargetSelect_SelectionChanged">
             <Label Content="正式服角色"/>
             <Label Content="测试服角色"/>
-            <!-- <Label Content="本地数据"/> -->
+            <Label Content="本地数据"/>
             <!-- <Label Content="云端数据"/> -->
             <!-- <Label Content="正式服账号下所有角色"/> -->
             <!-- <Label Content="测试服账号下所有角色"/> -->
         </ComboBox>
         <Label Content="来源" HorizontalAlignment="Left" Height="31" Margin="10,10,0,0" VerticalAlignment="Top" Width="76" Grid.Column="0" Grid.Row="0" />
         <Label Content="目标" HorizontalAlignment="Left" Height="31" Margin="10,10,0,0" VerticalAlignment="Top" Width="45" Grid.Column="2" Grid.Row="0" RenderTransformOrigin="0.578,0.516"/>
-        <Button Name="Go"  Content="→" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="31" Margin="0,10,0,0" VerticalAlignment="Top" Width="113" FontSize="24" Click="Go_Click">
+        <Button Name="Go"  Content="→" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="31" Margin="28,10,0,0" VerticalAlignment="Top" Width="113" FontSize="24" Click="Go_Click">
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
@@ -160,7 +160,11 @@
             <Label Content="url:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
             <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="162" MaxLines="1" TextWrapping="Wrap"  AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
         </Grid>
-        <Button Content="秀秀不咕@唯满侠" HorizontalAlignment="Left" Height="37" Margin="243,125,0,0" Grid.Row="1" VerticalAlignment="Top" Width="141" BorderBrush="White" Foreground="Black" Background="White" Grid.ColumnSpan="2" Click="Button_Click"/>
-
+        <Button Content="秀秀不咕@唯满侠" HorizontalAlignment="Left" Height="37" Margin="10,135,0,0" Grid.Row="1" VerticalAlignment="Top" Width="148" BorderBrush="White" Foreground="Black" Background="White" Click="Button_Click" Grid.Column="1" ToolTip="点击可查看并没有什么用的《关于》"/>
+        <CheckBox Content="关闭服务器同步" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="0,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="true" ToolTip="注意：此功能通过下载一个服务器同步选项全关闭的配置文件实现，所以需要网络连接"/>
+        <CheckBox Content="剑心喊话设置" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="0,35,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="True" ToolTip="包括技能喊话、过图喊话、击杀喊话等,需要在登陆过目标角色的机器上才能转移该数据"/>
+        <CheckBox Content="茗伊角色设置" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="0,60,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="True" ToolTip="包括茗伊便签（角色）、目标监控等,需要在登陆过目标角色的机器上才能转移该数据"/>
+        <CheckBox Content="剑心全局设置" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="0,85,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="False" ToolTip="包括公用的剑心焦点列表、技能增强等剑心插件的本地公用数据，适用于在不同的电脑环境之间迁移时使用"/>
+        <CheckBox Content="茗伊全局设置" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="0,110,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="False" ToolTip="包括公用的茗伊焦点列表、茗伊便签（公共）、头顶血条设置等茗伊插件的本地公用设置，适用于在不同的电脑环境之间迁移时使用"/>
     </Grid>
 </Window>
