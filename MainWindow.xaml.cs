@@ -4,6 +4,9 @@ using Microsoft.Win32;
 using System.Windows.Controls;
 using System.IO;
 using System.Net;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.Management.Instrumentation;
 
 namespace JX3SyncAssistant
 {
@@ -12,6 +15,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const string VERSION = "0.2.0"; 
         public MainWindow()
         {
             InitializeComponent();
@@ -26,7 +30,7 @@ namespace JX3SyncAssistant
                 SourceRoleGrid.Visibility = Visibility.Visible;
                 try
                 {
-                    SourceFolder.Text = Helper.GetGameFolderFromReg(SourceSelect.SelectedIndex != 0) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd\userdata" : @"\Game\JX3_EXP\bin\zhcn_exp\userdata");
+                    SourceFolder.Text = Helper.GetGameFolderFromReg(SourceSelect.SelectedIndex != 0) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
                 }
                 catch
                 {
@@ -39,14 +43,14 @@ namespace JX3SyncAssistant
         {
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text);
+                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + @"\userdata");
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 SourceAccounts.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
                     if(subDir.Name != "fight_stat")
                     {
-                        Label label = new Label { Content = subDir };
+                        Label label = new Label { Content = subDir.Name };
                         SourceAccounts.Items.Add(label);
                     }
                 }
@@ -62,61 +66,83 @@ namespace JX3SyncAssistant
        
         private void SourceAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (SourceAccounts.SelectedIndex == -1) {
+                SourceAreas.Items.Clear();
+                SourceServers.Items.Clear();
+                SourceRoles.Items.Clear();
+                return;
+            };
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + "\\" + (SourceAccounts.SelectedItem as Label).Content);
+                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + @"\userdata\" + (SourceAccounts.SelectedItem as Label).Content);
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 SourceAreas.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir };
+                    Label label = new Label { Content = subDir.Name };
                     SourceAreas.Items.Add(label);
                 }
                 SourceAreas.SelectedIndex = 0;
             }
-            catch
+            catch ( Exception E)
             {
                 SourceAreas.Items.Clear();
+                Console.WriteLine(E.Message);
+                Console.WriteLine(E.StackTrace);
             }
         }
 
         private void SourceAreas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (SourceAreas.SelectedIndex == -1)
+            {
+                SourceServers.Items.Clear();
+                SourceRoles.Items.Clear();
+                return;
+            };
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + "\\" + (SourceAccounts.SelectedItem as Label).Content + "\\" + (SourceAreas.SelectedItem as Label).Content);
+                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + @"\userdata\" + (SourceAccounts.SelectedItem as Label).Content + "\\" + (SourceAreas.SelectedItem as Label).Content);
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 SourceServers.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir };
+                    Label label = new Label { Content = subDir.Name };
                     SourceServers.Items.Add(label);
                 }
                 SourceServers.SelectedIndex = 0;
             }
-            catch
+            catch (Exception E)
             {
                 SourceServers.Items.Clear();
+                Console.WriteLine(E.Message);
+                Console.WriteLine(E.StackTrace);
             }
         }
 
         private void SourceServers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (SourceServers.SelectedIndex == -1) {
+                SourceRoles.Items.Clear();
+                return;
+            };
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + "\\" + (SourceAccounts.SelectedItem as Label).Content + "\\" + (SourceAreas.SelectedItem as Label).Content + "\\" + (SourceServers.SelectedItem as Label).Content);
+                DirectoryInfo dir = new DirectoryInfo(SourceFolder.Text + @"\userdata\" + (SourceAccounts.SelectedItem as Label).Content + "\\" + (SourceAreas.SelectedItem as Label).Content + "\\" + (SourceServers.SelectedItem as Label).Content);
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 SourceRoles.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir };
+                    Label label = new Label { Content = subDir.Name };
                     SourceRoles.Items.Add(label);
                 }
                 SourceRoles.SelectedIndex = 0;
             }
-            catch
+            catch (Exception E)
             {
                 SourceRoles.Items.Clear();
+                Console.WriteLine(E.Message);
+                Console.WriteLine(E.StackTrace);
             }
         }
 
@@ -127,7 +153,7 @@ namespace JX3SyncAssistant
                 TargetRoleGrid.Visibility = Visibility.Visible;
                 try
                 {
-                    TargetFolder.Text = Helper.GetGameFolderFromReg(TargetSelect.SelectedIndex != 0) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd\userdata" : @"\Game\JX3_EXP\bin\zhcn_exp\userdata");
+                    TargetFolder.Text = Helper.GetGameFolderFromReg(TargetSelect.SelectedIndex != 0) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
                 }
                 catch
                 {
@@ -140,14 +166,14 @@ namespace JX3SyncAssistant
         {
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text);
+                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + @"\userdata");
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 TargetAccounts.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
                     if (subDir.Name != "fight_stat")
                     {
-                        Label label = new Label { Content = subDir };
+                        Label label = new Label { Content = subDir.Name };
                         TargetAccounts.Items.Add(label);
                     }
                 }
@@ -162,61 +188,83 @@ namespace JX3SyncAssistant
 
         private void TargetAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (TargetAccounts.SelectedIndex == -1) {
+                TargetAreas.Items.Clear();
+                TargetServers.Items.Clear();
+                TargetRoles.Items.Clear();
+                return;
+            };
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + "\\" + (TargetAccounts.SelectedItem as Label).Content);
+                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + @"\userdata\" + (TargetAccounts.SelectedItem as Label).Content);
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 TargetAreas.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir };
+                    Label label = new Label { Content = subDir.Name };
                     TargetAreas.Items.Add(label);
                 }
                 TargetAreas.SelectedIndex = 0;
             }
-            catch
+            catch (Exception E)
             {
                 TargetAreas.Items.Clear();
+                Console.WriteLine(E.Message);
+                Console.WriteLine(E.StackTrace);
             }
         }
 
         private void TargetAreas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (TargetAreas.SelectedIndex == -1) {
+                TargetServers.Items.Clear();
+                TargetRoles.Items.Clear();
+                return;
+
+            };
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + "\\" + (TargetAccounts.SelectedItem as Label).Content + "\\" + (TargetAreas.SelectedItem as Label).Content);
+                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + @"\userdata\" + (TargetAccounts.SelectedItem as Label).Content + "\\" + (TargetAreas.SelectedItem as Label).Content);
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 TargetServers.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir };
+                    Label label = new Label { Content = subDir.Name };
                     TargetServers.Items.Add(label);
                 }
                 TargetServers.SelectedIndex = 0;
             }
-            catch
+            catch (Exception E)
             {
                 TargetServers.Items.Clear();
+                Console.WriteLine(E.Message);
+                Console.WriteLine(E.StackTrace);
             }
         }
 
         private void TargetServers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (TargetServers.SelectedIndex == -1) {
+                TargetRoles.Items.Clear();
+                return;
+            };
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + "\\" + (TargetAccounts.SelectedItem as Label).Content + "\\" + (TargetAreas.SelectedItem as Label).Content + "\\" + (TargetServers.SelectedItem as Label).Content);
+                DirectoryInfo dir = new DirectoryInfo(TargetFolder.Text + @"\userdata\" + (TargetAccounts.SelectedItem as Label).Content + "\\" + (TargetAreas.SelectedItem as Label).Content + "\\" + (TargetServers.SelectedItem as Label).Content);
                 DirectoryInfo[] subDirs = dir.GetDirectories();
                 TargetRoles.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir };
+                    Label label = new Label { Content = subDir.Name };
                     TargetRoles.Items.Add(label);
                 }
                 TargetRoles.SelectedIndex = 0;
             }
-            catch
+            catch (Exception E)
             {
                 TargetRoles.Items.Clear();
+                Console.WriteLine(E.Message);
+                Console.WriteLine(E.StackTrace);
             }
         }
 
@@ -227,14 +275,31 @@ namespace JX3SyncAssistant
             {
                 if(SourceAccounts.SelectedIndex != -1)
                 {
+                    //get sync options
+                    Dictionary<string, bool> options = new Dictionary<string, bool>{
+                        { "userdata", (bool)UISettings.IsChecked },
+                        { "userdata_async", !(bool)ServerSyncSettings.IsChecked },
+                        { "jx_role_config", (bool)JXNoticeSettings.IsChecked },
+                        { "my_role_config", (bool)MYRoleSettings.IsChecked },
+                        { "jx_config", (bool)JXGlobalSettings.IsChecked },
+                        { "my_config", (bool)MYGlobalSettings.IsChecked } 
+                    };
                     try
                     {
-                        string userdataFolder = SourceFolder.Text + "\\" + (SourceAccounts.SelectedItem as Label).Content + "\\" + (SourceAreas.SelectedItem as Label).Content + "\\" + (SourceServers.SelectedItem as Label).Content + "\\" + (SourceRoles.SelectedItem as Label).Content;
-                        Helper.GetZipFromUserdata(userdataFolder, "userdata.zip");
+                        string SourceGameFolder = SourceFolder.Text;
+                        Dictionary<string, string> roleInfo = new Dictionary<string, string> {
+                            { "account", (string)(SourceAccounts.SelectedItem as Label).Content },
+                            { "area", (string)(SourceAreas.SelectedItem as Label).Content },
+                            { "server", (string)(SourceServers.SelectedItem as Label).Content },
+                            { "role", (string)(SourceRoles.SelectedItem as Label).Content }
+                        };
+                        Helper.GetZipFromUserdata(SourceGameFolder, "userdata.zip", roleInfo, options);
                     }
-                    catch
+                    catch(Exception E)
                     {
                         Console.WriteLine("getZipFromUserdata() Run Error!");
+                        Console.WriteLine(E.Message);
+                        Console.WriteLine(E.StackTrace);
                         return;
                     }
                 }
@@ -247,26 +312,24 @@ namespace JX3SyncAssistant
             //unpack zip file to target
             if(TargetSelect.SelectedIndex == 0 || TargetSelect.SelectedIndex == 1)
             {
-                if (SourceAccounts.SelectedIndex != -1)
+                if (TargetAccounts.SelectedIndex != -1)
                 {
-                    string userdataFolder = TargetFolder.Text + "\\" + (TargetAccounts.SelectedItem as Label).Content + "\\" + (TargetAreas.SelectedItem as Label).Content + "\\" + (TargetServers.SelectedItem as Label).Content + "\\" + (TargetRoles.SelectedItem as Label).Content;
                     try
                     {
-                        Helper.UnpackToUserdata("userdata.zip", userdataFolder);
+                        string TargetGameFolder = TargetFolder.Text;
+                        Dictionary<string, string> roleInfo = new Dictionary<string, string> {
+                            { "account", (string)(TargetAccounts.SelectedItem as Label).Content },
+                            { "area", (string)(TargetAreas.SelectedItem as Label).Content },
+                            { "server", (string)(TargetServers.SelectedItem as Label).Content },
+                            { "role", (string)(TargetRoles.SelectedItem as Label).Content }
+                        };
+                        Helper.UnpackToUserdata(TargetGameFolder, "userdata.zip", roleInfo);
                     }
-                    catch
+                    catch (Exception E)
                     {
                         Console.WriteLine("UnpackToUserdata() Run Error!");
-                        return;
-                    }
-                    try
-                    {
-                        WebClient wc = new WebClient();
-                        wc.DownloadFile("http://47.101.177.238/userpreferencesasync.jx3dat", userdataFolder + "\\userpreferencesasync.jx3dat");
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Download async settings Error!");
+                        Console.WriteLine(E.Message);
+                        Console.WriteLine(E.StackTrace);
                         return;
                     }
                 }
@@ -309,8 +372,9 @@ namespace JX3SyncAssistant
                 "老习惯作品会开源在github，我的主页是 https://github.com/X3ZvaWQ \n" +
                 "游戏id 秀秀不咕 坐标唯满侠 是一个秀萝 \n" +
                 "如果有什么意见的话可以和我提，也可以自己改之后pr，第一次写C#也是第一次用WPF写窗口程序，可能代码很难看敬请谅解（x \n" +
-                "随便怎么用，不要商业即可 \n" +
-                "软件版本 0.1.0", "关于");
+                "根据GPLv0.3.0 随便怎么用，不要商业即可 \n" +
+                "0.2.0相比0.1.0版本增加的内容主要有允许自定义是否关闭服务器同步、允许同步插件设置等。\n" +
+                "软件版本 0.2.0", "关于");
         }
     }
 }
