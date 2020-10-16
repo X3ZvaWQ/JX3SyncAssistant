@@ -3,10 +3,7 @@ using System.Windows;
 using Microsoft.Win32;
 using System.Windows.Controls;
 using System.IO;
-using System.Net;
-using System.Text.Json;
 using System.Collections.Generic;
-using System.Management.Instrumentation;
 
 namespace JX3SyncAssistant
 {
@@ -58,7 +55,7 @@ namespace JX3SyncAssistant
             }
             catch
             {
-                Console.WriteLine(SourceFolder.Text);
+                Helper.Log(SourceFolder.Text, LogPanel);
                 SourceAccounts.Items.Clear();
             }
 
@@ -87,8 +84,8 @@ namespace JX3SyncAssistant
             catch ( Exception E)
             {
                 SourceAreas.Items.Clear();
-                Console.WriteLine(E.Message);
-                Console.WriteLine(E.StackTrace);
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
             }
         }
 
@@ -115,8 +112,8 @@ namespace JX3SyncAssistant
             catch (Exception E)
             {
                 SourceServers.Items.Clear();
-                Console.WriteLine(E.Message);
-                Console.WriteLine(E.StackTrace);
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
             }
         }
 
@@ -140,9 +137,9 @@ namespace JX3SyncAssistant
             }
             catch (Exception E)
             {
-                SourceRoles.Items.Clear();
-                Console.WriteLine(E.Message);
-                Console.WriteLine(E.StackTrace);
+                SourceRoles.Items.Clear(); 
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
             }
         }
 
@@ -181,7 +178,7 @@ namespace JX3SyncAssistant
             }
             catch
             {
-                Console.WriteLine(TargetFolder.Text);
+                Helper.Log(TargetFolder.Text, LogPanel);
                 TargetAccounts.Items.Clear();
             }
         }
@@ -209,8 +206,8 @@ namespace JX3SyncAssistant
             catch (Exception E)
             {
                 TargetAreas.Items.Clear();
-                Console.WriteLine(E.Message);
-                Console.WriteLine(E.StackTrace);
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
             }
         }
 
@@ -237,8 +234,8 @@ namespace JX3SyncAssistant
             catch (Exception E)
             {
                 TargetServers.Items.Clear();
-                Console.WriteLine(E.Message);
-                Console.WriteLine(E.StackTrace);
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
             }
         }
 
@@ -263,8 +260,8 @@ namespace JX3SyncAssistant
             catch (Exception E)
             {
                 TargetRoles.Items.Clear();
-                Console.WriteLine(E.Message);
-                Console.WriteLine(E.StackTrace);
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
             }
         }
 
@@ -293,13 +290,13 @@ namespace JX3SyncAssistant
                             { "server", (string)(SourceServers.SelectedItem as Label).Content },
                             { "role", (string)(SourceRoles.SelectedItem as Label).Content }
                         };
-                        Helper.GetZipFromUserdata(SourceGameFolder, "userdata.zip", roleInfo, options);
+                        Helper.GetZipFromUserdata(SourceGameFolder, "userdata.zip", roleInfo, options, LogPanel);
                     }
                     catch(Exception E)
                     {
-                        Console.WriteLine("getZipFromUserdata() Run Error!");
-                        Console.WriteLine(E.Message);
-                        Console.WriteLine(E.StackTrace);
+                        Helper.Log("getZipFromUserdata() Run Error!", LogPanel);
+                        Helper.Log(E.Message, LogPanel);
+                        Helper.Log(E.StackTrace, LogPanel);
                         return;
                     }
                 }
@@ -323,13 +320,13 @@ namespace JX3SyncAssistant
                             { "server", (string)(TargetServers.SelectedItem as Label).Content },
                             { "role", (string)(TargetRoles.SelectedItem as Label).Content }
                         };
-                        Helper.UnpackToUserdata(TargetGameFolder, "userdata.zip", roleInfo);
+                        Helper.UnpackToUserdata(TargetGameFolder, "userdata.zip", roleInfo, LogPanel);
                     }
                     catch (Exception E)
                     {
-                        Console.WriteLine("UnpackToUserdata() Run Error!");
-                        Console.WriteLine(E.Message);
-                        Console.WriteLine(E.StackTrace);
+                        Helper.Log("UnpackToUserdata() Run Error!", LogPanel);
+                        Helper.Log(E.Message, LogPanel);
+                        Helper.Log(E.StackTrace, LogPanel);
                         return;
                     }
                 }

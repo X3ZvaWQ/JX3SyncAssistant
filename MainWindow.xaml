@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:JX3SyncAssistant"
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="JX3SyncAssistant v0.2.0" Height="279" Width="703"
-        ResizeMode="CanMinimize"
+        Title="JX3SyncAssistant v0.2.0" Height="282" Width="710"
+        ResizeMode="CanResize"
         FontSize="16" Icon="20201013105745897_easyicon_net_128.ico"
     >
 
-    <Grid Margin="0,0,0,-8">
+    <Grid Height="250" Width="710" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="192*"/>
-            <ColumnDefinition Width="71*"/>
+            <ColumnDefinition Width="196*"/>
+            <ColumnDefinition Width="75*"/>
             <ColumnDefinition Width="168*"/>
-            <ColumnDefinition Width="266*"/>
+            <ColumnDefinition Width="271*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20*"/>
@@ -168,5 +168,6 @@
         <CheckBox Name="MYRoleSettings" Content="茗伊角色设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="True" ToolTip="包括茗伊便签（角色）、目标监控等,需要在登陆过目标角色的机器上才能转移该数据"/>
         <CheckBox Name="JXGlobalSettings" Content="剑心全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,106,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="False" ToolTip="包括公用的剑心焦点列表、技能增强等剑心插件的本地公用数据，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
         <CheckBox Name="MYGlobalSettings" Content="茗伊全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,131,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="False" ToolTip="包括公用的茗伊焦点列表、茗伊便签（公共）、头顶血条设置、目标监控等茗伊插件的本地公用设置(但是不包含团队监控[大文件]、角色统计[隐私]等)，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
+        <TextBox Name="LogPanel" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="223" Margin="0,210,0,-233" Grid.Row="1" TextWrapping="NoWrap" Text="Log" VerticalAlignment="Top" Width="697" FontFamily="Consolas" IsReadOnly="True" FontSize="13" Background="Black" Foreground="#FFFDA7FD" BorderBrush="Black" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
     </Grid>
 </Window>

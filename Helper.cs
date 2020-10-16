@@ -6,18 +6,14 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Forms;
+using System.Windows.Controls;
 
 namespace JX3SyncAssistant
 {
     static class Helper
     {
-        public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options)
+        public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options, TextBox logPanel)
         {
             Profile profile = new Profile {
                 version = MainWindow.VERSION,
@@ -266,7 +262,7 @@ namespace JX3SyncAssistant
             }
         }
 
-        public static void UnpackToUserdata(string TargetGameFolder, string zip, Dictionary<string, string> roleInfo)
+        public static void UnpackToUserdata(string TargetGameFolder, string zip, Dictionary<string, string> roleInfo, TextBox logPanel)
         {
             using (FileStream fs = new FileStream(zip, FileMode.Open))
             using (ZipArchive zipArchive = new ZipArchive(fs, ZipArchiveMode.Read))
@@ -277,7 +273,7 @@ namespace JX3SyncAssistant
                     Profile profile = JsonSerializer.Deserialize<Profile>(File.ReadAllText("profile.json"));
                     File.Delete("profile.json");
                     if(profile.version != MainWindow.VERSION) {
-                        Console.WriteLine("WARN: The description document version of the data is inconsistent with the program version. This may cause data migration errors.");
+                        Helper.Log("WARN: The description document version of the data is inconsistent with the program version. This may cause data migration errors.", logPanel);
                     }
                     Dictionary<string, string[]> files = profile.files;
                     if(files.ContainsKey("userdata"))
@@ -289,12 +285,12 @@ namespace JX3SyncAssistant
                             {
                                 ZipArchiveEntry zipArchiveEntry = zipArchive.GetEntry(file);
                                 zipArchiveEntry.ExtractToFile(userdataFolder + Path.GetFileName(file), true);
-                                Console.WriteLine($"INFO: File \"{file}\" has been extract to \"{userdataFolder + Path.GetFileName(file)}\"");
+                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{userdataFolder + Path.GetFileName(file)}\"", logPanel);
                             }
                             catch (Exception E)
                             {
-                                Console.WriteLine(E.Message);
-                                Console.WriteLine(E.StackTrace);
+                                Helper.Log(E.Message, logPanel);
+                                Helper.Log(E.StackTrace, logPanel);
                             }
                         }
                     }
@@ -308,13 +304,13 @@ namespace JX3SyncAssistant
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file);
                                 Directory.CreateDirectory(targetExtractFolder);
                                 zipArchiveEntry.ExtractToFile(TargetGameFolder + file, true);
-                                Console.WriteLine($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file}\"");
+                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file}\"", logPanel);
 
                             }
                             catch (Exception E)
                             {
-                                Console.WriteLine(E.Message);
-                                Console.WriteLine(E.StackTrace);
+                                Helper.Log(E.Message, logPanel);
+                                Helper.Log(E.StackTrace, logPanel);
                             }
                         }
                     }
@@ -329,12 +325,12 @@ namespace JX3SyncAssistant
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file);
                                 Directory.CreateDirectory(targetExtractFolder);
                                 zipArchiveEntry.ExtractToFile(TargetGameFolder + file, true);
-                                Console.WriteLine($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file}\"");
+                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file}\"", logPanel);
                             }
                             catch (Exception E)
                             {
-                                Console.WriteLine(E.Message);
-                                Console.WriteLine(E.StackTrace);
+                                Helper.Log(E.Message, logPanel);
+                                Helper.Log(E.StackTrace, logPanel);
                             }
                         }
                     }
@@ -350,7 +346,7 @@ namespace JX3SyncAssistant
                     }
                     else
                     {
-                        Console.WriteLine("WARN: Cannot find out role id in MY#DATA, All role plugin setting will be skip.");
+                        Helper.Log("WARN: Cannot find out role id in MY#DATA, All role plugin setting will be skip.", logPanel);
                     }
                     if (files.ContainsKey("jx_role_config") && RoleIdEnable)
                     {
@@ -363,13 +359,13 @@ namespace JX3SyncAssistant
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file_name);
                                 Directory.CreateDirectory(targetExtractFolder);
                                 zipArchiveEntry.ExtractToFile(TargetGameFolder + file_name, true);
-                                Console.WriteLine($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file_name}\"");
+                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file_name}\"", logPanel);
 
                             }
                             catch (Exception E)
                             {
-                                Console.WriteLine(E.Message);
-                                Console.WriteLine(E.StackTrace);
+                                Helper.Log(E.Message, logPanel);
+                                Helper.Log(E.StackTrace, logPanel);
                             }
                         }
                     }
@@ -385,12 +381,12 @@ namespace JX3SyncAssistant
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file_name);
                                 Directory.CreateDirectory(targetExtractFolder);
                                 zipArchiveEntry.ExtractToFile(TargetGameFolder + file_name, true);
-                                Console.WriteLine($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file_name}\"");
+                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file_name}\"", logPanel);
                             }
                             catch (Exception E)
                             {
-                                Console.WriteLine(E.Message);
-                                Console.WriteLine(E.StackTrace);
+                                Helper.Log(E.Message, logPanel);
+                                Helper.Log(E.StackTrace, logPanel);
                             }
                         }
                     }
@@ -415,5 +411,10 @@ namespace JX3SyncAssistant
             return result;
         }
 
+        public static void Log(string str, TextBox logPanel)
+        {
+            logPanel.Text = logPanel.Text + "\n" + str;
+            Console.WriteLine(str);
+        }
     }
 }
