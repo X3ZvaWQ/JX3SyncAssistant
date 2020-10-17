@@ -7,15 +7,51 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace JX3SyncAssistant
 {
     static class Helper
     {
-        public static Dictionary<string, string> getAllRoles()
+        public static void PrintVersion()
         {
+            Console.WriteLine(Application.Current.MainWindow);
+        }
 
+        public static string[] GetAllRoles(string UserDataFolder)
+        {
+            string[] results;
+            ArrayList result_list = new ArrayList();
+            if(!File.Exists($@"{UserDataFolder}\config.dat"))
+            {
+                return new string[0];
+            }
+            string[] accounts = Directory.GetDirectories(UserDataFolder);
+            foreach(string account in accounts)
+            {
+                string account_name = Path.GetFileName(account);
+                if (account == "fight_stat") continue;
+                string[] areas = Directory.GetDirectories($@"{UserDataFolder}\{account_name}");
+                foreach(string area in areas)
+                {
+                    string area_name = Path.GetFileName(area);
+                    string[] servers = Directory.GetDirectories($@"{UserDataFolder}\{account_name}\{area_name}");
+                    foreach (string server in servers)
+                    {
+                        string server_name = Path.GetFileName(server);
+                        string[] roles = Directory.GetDirectories($@"{UserDataFolder}\{account_name}\{area_name}\{server_name}");
+                        foreach(string role in roles)
+                        {
+                            string role_name = Path.GetFileName(role);
+                            result_list.Add($"{role_name}|{server_name}|{account_name}|{area_name}");
+                        }
+                    }
+                }
+            }
+            results = (string[])result_list.ToArray(typeof(string));
+            return results;
         }
 
         public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options, TextBox logPanel)
@@ -424,6 +460,53 @@ namespace JX3SyncAssistant
         {
             logPanel.Text = logPanel.Text + "\n" + str;
             Console.WriteLine(str);
+        }
+    
+        public static void FromComboToLayer(ListBox lb, ComboBox account, ComboBox area, ComboBox server, ComboBox role)
+        {
+            if (lb.SelectedIndex == -1) return;
+            string str = (string)(lb.SelectedItem as Label).Content;
+            string[] roleInfo = str.Split('|');
+            ComboBox[] cbs = { account, area, server, role };
+            int[] ints = { 2, 3, 1, 0 };
+            for (int i = 0; i < 4; i++)
+            {
+                int j = 0;
+                foreach (Label cbi in cbs[i].Items)
+                {
+                    if ((string)cbi.Content == roleInfo[ints[i]])
+                    {
+                        cbs[i].SelectedIndex = j;
+                        j = 0;
+                        break;
+                    }
+                    j++;
+                }
+            }
+        }
+
+        public static void FromLayerToCombo(ListBox lb, ComboBox account, ComboBox area, ComboBox server, ComboBox role)
+        {
+            if (role.SelectedIndex == -1) return;
+            Dictionary<string, string> roleInfo = new Dictionary<string, string> {
+                            { "account", (string)(account.SelectedItem as Label).Content },
+                            { "area", (string)(area.SelectedItem as Label).Content },
+                            { "server", (string)(server.SelectedItem as Label).Content },
+                            { "role", (string)(role.SelectedItem as Label).Content }
+                        };
+            string str = $"{roleInfo["role"]}|{roleInfo["server"]}|{roleInfo["account"]}|{roleInfo["area"]}";
+            int j = 0;
+            foreach (Label cbi in lb.Items)
+            {
+                if ((string)cbi.Content == str)
+                {
+                    lb.SelectedIndex = j;
+                    lb.ScrollIntoView(cbi);
+                    j = 0;
+                    break;
+                }
+                j++;
+            }
         }
     }
 }

@@ -2,128 +2,247 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:JX3SyncAssistant"
-        xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="JX3SyncAssistant.MainWindow"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="JX3SyncAssistant v0.2.1" Height="311" Width="710"
-        ResizeMode="CanResize"
-        FontSize="16" Icon="20201013105745897_easyicon_net_128.ico"
+        Title="JX3SyncAssistant v0.3.0" Height="350" Width="710"
+        ResizeMode="CanMinimize"
+        Icon="20201013105745897_easyicon_net_128.ico"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
     >
 
-    <Grid Height="280
-          " Width="710" VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="196*"/>
-            <ColumnDefinition Width="75*"/>
-            <ColumnDefinition Width="168*"/>
-            <ColumnDefinition Width="271*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20*"/>
-            <RowDefinition Height="80*"/>
-        </Grid.RowDefinitions>
-        <ComboBox Name="SourceSelect"  HorizontalAlignment="Left" Height="31" Margin="64,10,0,0" VerticalAlignment="Top" Width="156" Grid.Column="0" Grid.Row="0" SelectionChanged="SourceSelect_SelectionChanged" Grid.ColumnSpan="2">
-            <Label Content="正式服角色"/>
-            <Label Content="测试服角色"/>
-            <!-- <Label Content="本地数据"/> -->
-            <!-- <Label Content="云端数据"/> -->
-            <!-- <Label Content="正式服账号下所有角色"/> -->
-            <!-- <Label Content="测试服账号下所有角色"/> -->
-        </ComboBox>
-        <ComboBox Name="TargetSelect" HorizontalAlignment="Left" Height="31" Margin="55,10,0,0" VerticalAlignment="Top" Width="173" Grid.Column="3" Grid.Row="0" SelectionChanged="TargetSelect_SelectionChanged">
-            <Label Content="正式服角色"/>
-            <Label Content="测试服角色"/>
-            <!-- <Label Content="本地数据"/> -->
-            <!-- <Label Content="云端数据"/> -->
-            <!-- <Label Content="正式服账号下所有角色"/> -->
-            <!-- <Label Content="测试服账号下所有角色"/> -->
-        </ComboBox>
-        <Label Content="来源" HorizontalAlignment="Left" Height="31" Margin="10,10,0,0" VerticalAlignment="Top" Width="76" Grid.Column="0" Grid.Row="0" />
-        <Label Content="目标" HorizontalAlignment="Left" Height="31" Margin="10,10,0,0" VerticalAlignment="Top" Width="45" Grid.Column="3" Grid.Row="0" RenderTransformOrigin="0.578,0.516"/>
-        <Button Name="Go"  Content="→" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Height="31" Margin="22,10,0,0" VerticalAlignment="Top" Width="113" FontSize="24" Click="Go_Click">
-            <Button.Effect>
-                <DropShadowEffect/>
-            </Button.Effect>
-        </Button>
-        <!-- <CheckBox Content="尝试同步茗伊插件" HorizontalAlignment="Left" Height="23" Grid.Row="1" VerticalAlignment="Top" Width="152" IsChecked="True" Margin="250,38,0,0" Grid.ColumnSpan="3"/> -->
-        <!-- <CheckBox Content="尝试同步剑心插件" HorizontalAlignment="Left" Height="23" Grid.Row="1" VerticalAlignment="Top" Width="152" IsChecked="True" Margin="250,38,0,0" Grid.ColumnSpan="3"/> -->
+    <Window.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Margin="{TemplateBinding Margin}"
+                            ClipToBounds="{TemplateBinding ClipToBounds}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0:0:0.3" To="Normal">
+                                            <VisualTransition.GeneratedEasingFunction>
+                                                <CircleEase EasingMode="EaseOut"/>
+                                            </VisualTransition.GeneratedEasingFunction>
+                                        </VisualTransition>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState Name="Normal"/>
+                                    <VisualState Name="MouseOver">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Opacity"
+                                                             To="0.1" Duration="0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState Name="Disabled"/>
+                                </VisualStateGroup>
+                                <VisualStateGroup Name="SelectionStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0:0:0.6"/>
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState Name="Selected">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="SelectedBorder"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.275" Duration="0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState Name="Unselected"/>
+                                    <VisualState Name="SelectedUnfocused">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="SelectedBorder"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0.275" Duration="0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid>
+                                <Border x:Name="MouseOverBorder"
+                                    Opacity="0"
+                                    Background="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"/>
 
-        <!-- Role select grid -->
-        <!-- left -->
-        <Grid Name="SourceRoleGrid" HorizontalAlignment="Left" Height="152" Margin="10,16,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="0" Visibility="Visible" Grid.ColumnSpan="2">
+                                <Border x:Name="SelectedBorder"
+                                    Opacity="0"
+                                    Background="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="1"/>
+                                    </Border.RenderTransform>
+                                </Border>
+                                <materialDesign:Ripple Feedback="{TemplateBinding Foreground, Converter={StaticResource BrushRoundConverter}}"
+                                        Focusable="False"
+                                        Content="{TemplateBinding Content}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Padding="{TemplateBinding Padding}"
+                                        RecognizesAccessKey="False"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value=".56" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid  Width="710" VerticalAlignment="Top" Margin="1,0,-7,0" Height="279">
+        <Grid Margin="0,0,10,19" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="86*"/>
+                <ColumnDefinition Width="280*"/>
+                <ColumnDefinition Width="165*"/>
+                <ColumnDefinition Width="280*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="80*"/>
             </Grid.RowDefinitions>
-            <Label Content="目录" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
-            <Label Content="账号" HorizontalAlignment="Left" Height="31" Margin="0,5,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="1" />
-            <Label Content="区服" HorizontalAlignment="Left" Height="31" Margin="0,3,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="2" />
-            <Label Content="角色" HorizontalAlignment="Left" Height="31" Margin="0,1,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="3" />
-            <TextBox Name="SourceFolder" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="NoWrap" AcceptsReturn="False" Text="" TextChanged="SourceFolder_TextChanged"/>
-            <Button  Name="SourceBrowse" Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30" Height="28" Click="SourceBrowse_Click"/>
-            <ComboBox Name="SourceAccounts" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="0,8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="172" SelectionChanged="SourceAccounts_SelectionChanged"/>
-            <ComboBox Name="SourceAreas" HorizontalAlignment="Left" Height="28" Margin="0,6,0,0" Grid.Row="2" VerticalAlignment="Top" Width="81" Grid.Column="1" SelectionChanged="SourceAreas_SelectionChanged" FontSize="12"/>
-            <ComboBox Name="SourceServers" HorizontalAlignment="Left" Height="28" Margin="91,6,0,0" Grid.Row="2" VerticalAlignment="Top" Width="81" Grid.Column="1" SelectionChanged="SourceServers_SelectionChanged" FontSize="12"/>
-            <ComboBox Name="SourceRoles" HorizontalAlignment="Left" Height="28" Margin="0,4,0,0" Grid.Row="3" VerticalAlignment="Top" Width="172" Grid.Column="1"/>
-        </Grid>
-        <!-- right -->
-        <Grid Name="TargetRoleGrid" HorizontalAlignment="Left" Height="152" Margin="10,16,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="3" Visibility="Visible">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="86*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Label Content="目录" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
-            <Label Content="账号" HorizontalAlignment="Left" Height="31" Margin="0,5,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="1" />
-            <Label Content="区服" HorizontalAlignment="Left" Height="31" Margin="0,3,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="2" />
-            <Label Content="角色" HorizontalAlignment="Left" Height="31" Margin="0,1,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="3" />
-            <TextBox Name="TargetFolder" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="NoWrap" AcceptsReturn="False" Text="" TextChanged="TargetFolder_TextChanged"/>
-            <Button  Name="TargetBrowse" Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" Width="30" Click="TargetBrowse_Click"/>
-            <ComboBox Name="TargetAccounts" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="0,8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="172" SelectionChanged="TargetAccounts_SelectionChanged"/>
-            <ComboBox Name="TargetAreas" HorizontalAlignment="Left" Height="28" Margin="0,6,0,0" Grid.Row="2" VerticalAlignment="Top" Width="81" Grid.Column="1" FontSize="12" SelectionChanged="TargetAreas_SelectionChanged"/>
-            <ComboBox Name="TargetServers" HorizontalAlignment="Left" Height="28" Margin="91,6,0,0" Grid.Row="2" VerticalAlignment="Top" Width="81" Grid.Column="1" FontSize="12" SelectionChanged="TargetServers_SelectionChanged"/>
-            <ComboBox Name="TargetRoles" HorizontalAlignment="Left" Height="28" Margin="0,4,0,0" Grid.Row="3" VerticalAlignment="Top" Width="172" Grid.Column="1"/>
-        </Grid>
+            <ComboBox Name="SourceSelect"  HorizontalAlignment="Left" Height="32" Margin="75,10,0,0" VerticalAlignment="Top" Width="160" Grid.Column="0" Grid.Row="0" SelectionChanged="SourceSelect_SelectionChanged">
+                <Label Content="正式服角色"/>
+                <Label Content="测试服角色"/>
+                <!-- <Label Content="本地数据"/> -->
+                <!-- <Label Content="云端数据"/> -->
+                <!-- <Label Content="正式服账号下所有角色"/> -->
+                <!-- <Label Content="测试服账号下所有角色"/> -->
+            </ComboBox>
+            <ComboBox Name="TargetSelect" HorizontalAlignment="Left" Height="32" Margin="75,10,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" Grid.Row="0" SelectionChanged="TargetSelect_SelectionChanged">
+                <Label Content="正式服角色"/>
+                <Label Content="测试服角色"/>
+                <!-- <Label Content="本地数据"/> -->
+                <!-- <Label Content="云端数据"/> -->
+                <!-- <Label Content="正式服账号下所有角色"/> -->
+                <!-- <Label Content="测试服账号下所有角色"/> -->
+            </ComboBox>
+            <Label Content="来源" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
+            <Label Content="目标" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="2" Grid.Row="0" RenderTransformOrigin="0.578,0.516"/>
+            <Button Name="Go" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="36" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" FontSize="24" Click="Go_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}">
+                <materialDesign:PackIcon Kind="ArrowRightBold"  Foreground="White"/>
+            </Button>
 
-        <!-- file browser -->
-        <!-- left -->
-        <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="0" Visibility="Hidden" Grid.ColumnSpan="2" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="86*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Label Content="存至:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
-            <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="Wrap" AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
-            <Button Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30" Height="28"/>
-        </Grid>
-        <!-- right -->
-        <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="3" Visibility="Hidden" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="86*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Label Content="存至:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
-            <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="Wrap" AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
-            <Button Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30" Height="28"/>
-            <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="2" Visibility="Hidden" >
+            <!-- Role select grid -->
+            <!-- left -->
+            <Grid Name="SourceRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Visible" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="34*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                <Grid Name="SourceFolderSelect"  Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="19*" />
+                        <ColumnDefinition Width="61*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="目录" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" Margin="15,10,0,0"/>
+                    <TextBox Name="SourceFolder" HorizontalAlignment="Left" Height="28" Margin="10,8,0,0" VerticalAlignment="Top" Width="161" MaxLines="1" TextWrapping="NoWrap" AcceptsReturn="False" Text="" TextChanged="SourceFolder_TextChanged" Grid.Row="0" Grid.Column="1" RenderTransformOrigin="0.186,0.571"/>
+                    <Button  Name="SourceBrowse" Content="..." HorizontalAlignment="Left" Margin="171,8,0,0" VerticalAlignment="Top"  Click="SourceBrowse_Click" Width="27" Height="28" Padding="0"  Grid.Row="0" Grid.Column="1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Foreground="White"/>
+                </Grid>
+                <!-- Layer Select -->
+                <Grid Name="SourceRoleLayerSelect" Grid.Row="1" Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="19*" />
+                        <ColumnDefinition Width="61*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="账号" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
+                    <Label Content="区服" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="1" />
+                    <Label Content="角色" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="2" />
+                    <ComboBox Name="SourceAccounts" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Top" Width="190" SelectionChanged="SourceAccounts_SelectionChanged"/>
+                    <ComboBox Name="SourceAreas" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="SourceAreas_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="SourceServers" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="SourceServers_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="SourceRoles" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="SourceRoles_SelectionChanged"/>
+                </Grid>
+                <!-- Combo Select -->
+                <Grid Name="SourceRoleComboSelect" Grid.Row="1" Visibility="Visible">
+                    <ListBox Name="SourceRoleList" Margin="15,0,15,0" SelectionChanged="SourceRoleList_SelectionChanged"/>
+                </Grid>
+
+                <Grid Name="SourceRoleSelectSetting"  Grid.Row="2">
+                    <Button Name="SourceRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="SourceRoleSelectModeSwitchButton_Click" >
+                        <materialDesign:PackIcon Kind="FolderTableOutline" Foreground="White"/>
+                    </Button>
+                    <TextBox Name="SourceSearchRoleSearch" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="218" TextChanged="SourceSearchRoleSearch_TextChanged"/>
+                </Grid>
+
+            </Grid>
+            <!-- right -->
+            <Grid Name="TargetRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Visible" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="34*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                <Grid Name="TargetFolderSelect"  Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="19*" />
+                        <ColumnDefinition Width="61*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="目录" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" Margin="15,10,0,0"/>
+                    <TextBox Name="TargetFolder" HorizontalAlignment="Left" Height="28" Margin="10,8,0,0" VerticalAlignment="Top" Width="161" MaxLines="1" TextWrapping="NoWrap" AcceptsReturn="False" Text="" TextChanged="TargetFolder_TextChanged" Grid.Row="0" Grid.Column="1" RenderTransformOrigin="0.186,0.571"/>
+                    <Button  Name="TargetBrowse" Content="..." HorizontalAlignment="Left" Margin="171,8,0,0" VerticalAlignment="Top"  Click="TargetBrowse_Click" Width="27" Height="28" Padding="0"  Grid.Row="0" Grid.Column="1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Foreground="White"/>
+                </Grid>
+                <!-- Layer Select -->
+                <Grid Name="TargetRoleLayerSelect" Grid.Row="1" Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="19*" />
+                        <ColumnDefinition Width="61*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="账号" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
+                    <Label Content="区服" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="1" />
+                    <Label Content="角色" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="2" />
+                    <ComboBox Name="TargetAccounts" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Top" Width="190" SelectionChanged="TargetAccounts_SelectionChanged"/>
+                    <ComboBox Name="TargetAreas" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="TargetAreas_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="TargetServers" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="TargetServers_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="TargetRoles" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="TargetRoles_SelectionChanged"/>
+                </Grid>
+                <!-- Combo Select -->
+                <Grid Name="TargetRoleComboSelect" Grid.Row="1" Visibility="Visible">
+                    <ListBox Name="TargetRoleList" SelectionChanged="TargetRoleList_SelectionChanged">
+
+                    </ListBox>
+                </Grid>
+
+                <Grid Name="TargetRoleSelectSetting"  Grid.Row="2">
+                    <Button Name="TargetRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="TargetRoleSelectModeSwitchButton_Click" >
+                        <materialDesign:PackIcon Kind="FolderTableOutline" Foreground="White"/>
+                    </Button>
+                    <TextBox Name="TargetSearchRoleSearch" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="218" TextChanged="TargetSearchRoleSearch_TextChanged" />
+                </Grid>
+
+            </Grid>
+
+
+            <!-- file browser -->
+            <!-- left -->
+            <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="0" Visibility="Hidden" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25*"/>
                     <ColumnDefinition Width="86*"/>
@@ -135,40 +254,78 @@
                 <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="Wrap" AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
                 <Button Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30" Height="28"/>
             </Grid>
-        </Grid>
+            <!-- right -->
+            <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="2" Visibility="Hidden" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25*"/>
+                    <ColumnDefinition Width="86*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Content="存至:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
+                <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="Wrap" AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
+                <Button Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30" Height="28"/>
+                <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="2" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="86*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Content="存至:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
+                    <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="142" MaxLines="1" TextWrapping="Wrap" AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
+                    <Button Content="..." Grid.Column="1" HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30" Height="28"/>
+                </Grid>
+            </Grid>
 
-        <!-- url -->
-        <!-- left -->
-        <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="0" Visibility="Hidden" Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="86*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Label Content="url:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
-            <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="162" MaxLines="1" TextWrapping="Wrap"  AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
+            <!-- url -->
+            <!-- left -->
+            <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="0" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25*"/>
+                    <ColumnDefinition Width="86*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Content="url:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
+                <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="162" MaxLines="1" TextWrapping="Wrap"  AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
+            </Grid>
+            <!-- right -->
+            <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="2" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25*"/>
+                    <ColumnDefinition Width="86*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Content="url:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
+                <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="162" MaxLines="1" TextWrapping="Wrap"  AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
+            </Grid>
+
+            <Grid Name="SettingGrid" Grid.Row="1" Grid.Column="1">
+                <CheckBox Name="UISettings" Content="键位与UI设置" HorizontalAlignment="Left" Height="25" Margin="10,6,0,0" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括userdata文件夹内的角色数据，包括但不限于界面设置，部分聊天记录，键位摆放，部分插件的开关等"/>
+                <CheckBox Name="ServerSyncSettings" Content="关闭服务器同步" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,31,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="true" ToolTip="注意：此功能通过下载一个服务器同步选项全关闭的配置文件实现，所以需要网络连接"/>
+                <CheckBox Name="JXNoticeSettings" Content="剑心喊话设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,56,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括技能喊话、过图喊话、击杀喊话等,需要在登陆过目标角色的机器上才能转移该数据"/>
+                <CheckBox Name="MYRoleSettings" Content="茗伊角色设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括茗伊便签（角色）、目标监控等,需要在登陆过目标角色的机器上才能转移该数据"/>
+                <CheckBox Name="JXGlobalSettings" Content="剑心全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,106,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="False" ToolTip="包括公用的剑心焦点列表、技能增强等剑心插件的本地公用数据，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
+                <CheckBox Name="MYGlobalSettings" Content="茗伊全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,131,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="False" ToolTip="包括公用的茗伊焦点列表、茗伊便签（公共）、头顶血条设置、目标监控等茗伊插件的本地公用设置(但是不包含团队监控[大文件]、角色统计[隐私]等)，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
+            </Grid>
+
         </Grid>
-        <!-- right -->
-        <Grid HorizontalAlignment="Left" Height="152" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="222" Grid.Column="3" Visibility="Hidden">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="86*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Label Content="url:" HorizontalAlignment="Left" Height="31" Margin="0,7,0,0" VerticalAlignment="Top" Width="50" Grid.Column="0" Grid.Row="0" />
-            <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="132" Margin="0,10,0,0" VerticalAlignment="Top" Width="162" MaxLines="1" TextWrapping="Wrap"  AcceptsReturn="False" Text="D:\games\jw3\JX3\Game\JX3\bin\zhcn_hd\userdata\"/>
-        </Grid>
-        <Button Content="秀秀不咕@唯满侠" HorizontalAlignment="Left" Height="37" Margin="0,177,0,0" Grid.Row="1" VerticalAlignment="Top" Width="148" BorderBrush="White" Foreground="Black" Background="White" Click="Button_Click" Grid.Column="2" ToolTip="点击可查看并没有什么用的《关于》"/>
-        <CheckBox Name="UISettings" Content="键位与UI设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,6,0,0" VerticalAlignment="Top" Width="168" IsChecked="True" ToolTip="包括userdata文件夹内的角色数据，包括但不限于界面设置，部分聊天记录，键位摆放，部分插件的开关等" Grid.Row="1"/>
-        <CheckBox Name="ServerSyncSettings" Content="关闭服务器同步" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,31,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="true" ToolTip="注意：此功能通过下载一个服务器同步选项全关闭的配置文件实现，所以需要网络连接"/>
-        <CheckBox Name="JXNoticeSettings" Content="剑心喊话设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,56,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="True" ToolTip="包括技能喊话、过图喊话、击杀喊话等,需要在登陆过目标角色的机器上才能转移该数据"/>
-        <CheckBox Name="MYRoleSettings" Content="茗伊角色设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="True" ToolTip="包括茗伊便签（角色）、目标监控等,需要在登陆过目标角色的机器上才能转移该数据"/>
-        <CheckBox Name="JXGlobalSettings" Content="剑心全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,106,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="False" ToolTip="包括公用的剑心焦点列表、技能增强等剑心插件的本地公用数据，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
-        <CheckBox Name="MYGlobalSettings" Content="茗伊全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="0,131,0,0" Grid.Row="1" VerticalAlignment="Top" Width="168" IsChecked="False" ToolTip="包括公用的茗伊焦点列表、茗伊便签（公共）、头顶血条设置、目标监控等茗伊插件的本地公用设置(但是不包含团队监控[大文件]、角色统计[隐私]等)，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
-        <TextBox Name="LogPanel" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="223" Margin="0,232,0,-255" Grid.Row="1" TextWrapping="NoWrap" Text="Log" VerticalAlignment="Top" Width="697" FontFamily="Consolas" IsReadOnly="True" FontSize="13" Background="Black" Foreground="#FFFDA7FD" BorderBrush="Black" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+        <materialDesign:Card HorizontalAlignment="Left" Height="50" Margin="0,260,0,-31" VerticalAlignment="Top" Width="700" Padding="10,10,15,10" Grid.ColumnSpan="2" >
+            <Grid>
+                <Button Name="AboutButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" >
+                    <materialDesign:PackIcon Kind="InfoOutline" Foreground="White"/>
+                </Button>
+                <Button Name="LogButton" HorizontalAlignment="Right" Margin="0,0,40,0" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="Auto" Click="LogButton_Click" >
+                    <materialDesign:PackIcon Kind="Terminal" Foreground="White"/>
+                </Button>
+            </Grid>
+        </materialDesign:Card>
+        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Consolas" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>
