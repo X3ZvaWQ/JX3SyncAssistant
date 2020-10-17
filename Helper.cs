@@ -13,6 +13,11 @@ namespace JX3SyncAssistant
 {
     static class Helper
     {
+        public static Dictionary<string, string> getAllRoles()
+        {
+
+        }
+
         public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options, TextBox logPanel)
         {
             Profile profile = new Profile {
@@ -208,18 +213,22 @@ namespace JX3SyncAssistant
                             @"\interface\MY#DATA\!all-users@zhcn\config\xlifebar\common.jx3dat",
                             @"\interface\MY#DATA\!all-users@zhcn\manifest.jx3dat"
                         };
-                        string[] TargetMonFiles = Directory.GetFiles(SourceData + @"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon");
-                        foreach (string TargetMonFile in TargetMonFiles) {
-                            string file_name = $@"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon\{Path.GetFileName(TargetMonFile)}";
-                            try
+                        if(Directory.Exists(SourceData + @"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon"))
+                        {
+                            string[] TargetMonFiles = Directory.GetFiles(SourceData + @"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon");
+                            foreach (string TargetMonFile in TargetMonFiles)
                             {
-                                zipArchive.CreateEntryFromFile(SourceData + file_name, file_name);
-                                files.Add(file_name);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine($"Take \"{SourceData}{file_name}\" into Zip File Error！");
-                                Console.WriteLine(e.StackTrace);
+                                string file_name = $@"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon\{Path.GetFileName(TargetMonFile)}";
+                                try
+                                {
+                                    zipArchive.CreateEntryFromFile(SourceData + file_name, file_name);
+                                    files.Add(file_name);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine($"Take \"{SourceData}{file_name}\" into Zip File Error！");
+                                    Console.WriteLine(e.StackTrace);
+                                }
                             }
                         }
 
