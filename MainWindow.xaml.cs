@@ -15,7 +15,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.2.0"; 
+        public const string VERSION = "0.4.0"; 
         public MainWindow()
         {
             InitializeComponent();
@@ -477,8 +477,9 @@ namespace JX3SyncAssistant
                 "根据MIT开源许可证，随便你怎么玩（x \n" +
                 "0.2.0增加的内容主要有允许自定义是否关闭服务器同步、允许同步插件设置等。\n" +
                 "0.2.1修复了0.2.0 迁移茗伊数据选项对于 没有导入目标监控数据 的用户会报错导致迁移失败\n" +
-                "0.3.0增加的内容主要是美化了界面(随之程序体积也变大了x)、增加了一种用户建议的角色选择方式、增加了角色搜索功能以便更加快速找到目标角色" +
-                "软件版本 0.3.0", "关于");
+                "0.3.0增加的内容主要是美化了界面(随之程序体积也变大了x)、增加了一种用户建议的角色选择方式、增加了角色搜索功能以便更加快速找到目标角色\n" +
+                "0.4.0增加的内容主要是支持了通过文件进行导入导出方便去网吧游玩的玩家、添加了每个按钮上的Tooltip\n" +
+                "软件版本 0.4.0", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)

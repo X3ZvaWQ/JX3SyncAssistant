@@ -107,6 +107,10 @@
         </Style>
     </Window.Resources>
     <Grid  Width="710" VerticalAlignment="Top" Margin="1,0,-7,0" Height="279">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="179*"/>
+            <ColumnDefinition Width="531*"/>
+        </Grid.ColumnDefinitions>
         <Grid Margin="0,0,10,19" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="280*"/>
@@ -327,6 +331,6 @@
                 </Button>
             </Grid>
         </materialDesign:Card>
-        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Consolas" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Grid.ColumnSpan="2"/>
+        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Consolas" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Grid.ColumnSpan="2" Text="虽然这里目前空荡荡的像是花哥的头顶，但是这里确实就是日志区了"/>
     </Grid>
 </Window>
