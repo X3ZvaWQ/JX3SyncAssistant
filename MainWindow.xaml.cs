@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.IO;
 using System.Collections.Generic;
 using MaterialDesignThemes.Wpf;
+using System.Windows.Media;
+using JX3SyncAssistant.Properties;
 
 namespace JX3SyncAssistant
 {
@@ -19,22 +21,33 @@ namespace JX3SyncAssistant
             InitializeComponent();
             SourceSelect.SelectedIndex = 0;
             TargetSelect.SelectedIndex = 0;
+            SourceFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
+            TargetFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
+            try
+            {
+                SourceFolder.Text = Helper.GetGameFolderFromReg(SourceSelect.SelectedIndex != 0) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
+                TargetFolder.Text = Helper.GetGameFolderFromReg(TargetSelect.SelectedIndex != 0) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
+            }
+            catch
+            {
+                TargetFolder.Text = "获取程序路径失败，请手动选择";
+                SourceFolder.Text = "获取程序路径失败，请手动选择";
+            }
         }
 
         private void SourceSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(SourceSelect.SelectedIndex == 0 || SourceSelect.SelectedIndex == 1)
+            SourceRoleGrid.Visibility = Visibility.Hidden;
+            SourceFileGrid.Visibility = Visibility.Hidden;
+            if (SourceSelect.SelectedIndex == 0 || SourceSelect.SelectedIndex == 1)
             {
                 SourceRoleGrid.Visibility = Visibility.Visible;
-                try
-                {
-                    SourceFolder.Text = Helper.GetGameFolderFromReg(SourceSelect.SelectedIndex != 0) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
-                }
-                catch
-                {
-                    SourceFolder.Text = "获取程序路径失败，请手动选择";
-                }
             }
+            else if(SourceSelect.SelectedIndex == 2)
+            {
+                SourceFileGrid.Visibility = Visibility.Visible;
+            }
+
         }
 
         private void SourceFolder_TextChanged(object sender, TextChangedEventArgs e)
@@ -170,17 +183,15 @@ namespace JX3SyncAssistant
 
         private void TargetSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            TargetRoleGrid.Visibility = Visibility.Hidden;
+            TargetFileGrid.Visibility = Visibility.Hidden;
             if (TargetSelect.SelectedIndex == 0 || TargetSelect.SelectedIndex == 1)
             {
                 TargetRoleGrid.Visibility = Visibility.Visible;
-                try
-                {
-                    TargetFolder.Text = Helper.GetGameFolderFromReg(TargetSelect.SelectedIndex != 0) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
-                }
-                catch
-                {
-                    TargetFolder.Text = "获取程序路径失败，请手动选择";
-                }
+            }
+            else if (TargetSelect.SelectedIndex == 2)
+            {
+                TargetFileGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -350,7 +361,22 @@ namespace JX3SyncAssistant
                 }
                 else
                 {
-                    MessageBox.Show("请先选择作为数据来源的角色", "操作错误");
+                    MessageBox.Show("请先选择作为数据来源的角色", "表示错误的对话框");
+                }
+            }
+            else if(SourceSelect.SelectedIndex == 2)
+            {
+                if(SourceFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
+                {
+                    if(File.Exists(SourceFilePath.Text))
+                    {
+                        File.Copy(SourceFilePath.Text, AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip", true);
+                    }
+                    else
+                    {
+                        MessageBox.Show("源文件不存在哦，需要我为您变出来么（？ \n (可以在左边选择角色，右边选择本地数据文件进行文件的导出)", "表示疑惑地对话框");
+                        return;
+                    }
                 }
             }
 
@@ -380,11 +406,42 @@ namespace JX3SyncAssistant
                 }
                 else
                 {
-                    MessageBox.Show("请先选择作为数据目标的角色", "操作错误");
+                    MessageBox.Show("请先选择作为数据目标的角色", "表示错误的对话框");
                 }
             }
-
-            MessageBox.Show("没有意外的话应该成功了吧（？", "不太确定的提示框");
+            else if (TargetSelect.SelectedIndex == 2)
+            {
+                
+                if (TargetFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
+                {
+                    try
+                    {
+                        if (!Directory.Exists(Path.GetDirectoryName(TargetFilePath.Text))){
+                            Directory.CreateDirectory(Path.GetDirectoryName(TargetFilePath.Text));
+                        }
+                        if (File.Exists(TargetFilePath.Text))
+                        {
+                            File.Delete(TargetFilePath.Text);
+                        }
+                        File.Move("userdata.zip", TargetFilePath.Text);
+                        Helper.Log($"INFO: file \"userdata.zip\" has been moved to {TargetFilePath.Text}", LogPanel);
+                    }
+                    catch (Exception E)
+                    {
+                        MessageBox.Show("输出数据文件的过程中遇到了问题，请检查目标目录是否存在以及目标目录是否有同名文件是否正在被占用", "文件错误");
+                        Helper.Log(E.Message, LogPanel);
+                        Helper.Log(E.StackTrace, LogPanel);
+                    }
+                }
+            }
+            if(SourceSelect.SelectedIndex == 2 && SourceSelect.SelectedIndex == 2)
+            {
+                MessageBox.Show("我已经听话地把这个文件已经从左边移到右边了\n\n但是您为什么不自己Ctrl+C Ctrl+V呢  w(ﾟДﾟ)w", "表示疑惑的提示框");
+            }
+            else
+            {
+                MessageBox.Show("没有意外的话应该成功了吧（？", "不太确定的表示操作成功的提示框");
+            }
         }
 
         private void SourceBrowse_Click(object sender, RoutedEventArgs e)
@@ -395,7 +452,7 @@ namespace JX3SyncAssistant
             if (ofd.ShowDialog() == true)
             {
                 string folder = ofd.FileName;
-                SourceFolder.Text = System.IO.Path.GetDirectoryName(folder);
+                SourceFolder.Text = Path.GetDirectoryName(folder);
             }
         }
 
@@ -489,7 +546,10 @@ namespace JX3SyncAssistant
         private void SourceSearchRoleSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             string key = SourceSearchRoleSearch.Text;
-            if (key.Length < 2) return;
+            if (key.Length < 2)
+            {
+                return;
+            };
             int i = 0;
             foreach(Label role in SourceRoleList.Items)
             {
@@ -497,6 +557,7 @@ namespace JX3SyncAssistant
                 {
                     SourceRoleList.SelectedIndex = i;
                 }
+                else
                 i++;
             }
         }
@@ -504,7 +565,10 @@ namespace JX3SyncAssistant
         private void TargetSearchRoleSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             string key = TargetSearchRoleSearch.Text;
-            if (key.Length < 2) return;
+            if (key.Length < 2)
+            {
+                return; ;
+            }
             int i = 0;
             foreach (Label role in TargetRoleList.Items)
             {
@@ -516,5 +580,28 @@ namespace JX3SyncAssistant
             }
         }
 
+        private void SourceFileBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "ZipFile |*.zip";
+            ofd.FileName = "XLauncher.exe";
+            if (ofd.ShowDialog() == true)
+            {
+                string folder = ofd.FileName;
+                SourceFilePath.Text = folder;
+            }
+        }
+
+        private void TargetFileBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "ZipFile | *.zip";
+            sfd.FileName = "userdata.zip";
+            if (sfd.ShowDialog() == true)
+            {
+                string folder = sfd.FileName;
+                TargetFilePath.Text = folder;
+            }
+        }
     }
 }
