@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="JX3SyncAssistant v0.3.0" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.4.0" Height="350" Width="710"
         ResizeMode="CanMinimize"
         Icon="20201013105745897_easyicon_net_128.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -135,7 +135,8 @@
             </ComboBox>
             <Label Content="来源" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
             <Label Content="目标" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="2" Grid.Row="0" RenderTransformOrigin="0.578,0.516"/>
-            <Button Name="Go" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="36" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" FontSize="24" Click="Go_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}">
+            <Button Name="Go" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Height="36" Margin="10,10,0,0" VerticalAlignment="Top" Width="113" FontSize="24" Click="Go_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" 
+                    ToolTip="执行同步操作">
                 <materialDesign:PackIcon Kind="ArrowRightBold"  Foreground="White"/>
             </Button>
 
@@ -154,7 +155,8 @@
                     </Grid.ColumnDefinitions>
                     <Label Content="目录" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" Margin="15,10,0,0"/>
                     <TextBox Name="SourceFolder" HorizontalAlignment="Left" Height="28" Margin="10,8,0,0" VerticalAlignment="Top" Width="161" MaxLines="1" TextWrapping="NoWrap" AcceptsReturn="False" Text="" TextChanged="SourceFolder_TextChanged" Grid.Row="0" Grid.Column="1" RenderTransformOrigin="0.186,0.571"/>
-                    <Button  Name="SourceBrowse" Content="..." HorizontalAlignment="Left" Margin="171,8,0,0" VerticalAlignment="Top"  Click="SourceBrowse_Click" Width="27" Height="28" Padding="0"  Grid.Row="0" Grid.Column="1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Foreground="White"/>
+                    <Button  Name="SourceBrowse" Content="..." HorizontalAlignment="Left" Margin="168,6,0,0" VerticalAlignment="Top"  Click="SourceBrowse_Click" Width="30" Height="30" Padding="0"  Grid.Row="0" Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Foreground="White"
+                             ToolTip="浏览选择来源游戏目录"/>
                 </Grid>
                 <!-- Layer Select -->
                 <Grid Name="SourceRoleLayerSelect" Grid.Row="1" Visibility="Hidden">
@@ -177,14 +179,23 @@
                 </Grid>
                 <!-- Combo Select -->
                 <Grid Name="SourceRoleComboSelect" Grid.Row="1" Visibility="Visible">
-                    <ListBox Name="SourceRoleList" Margin="15,0,15,0" SelectionChanged="SourceRoleList_SelectionChanged"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox Name="SourceRoleList" Margin="15,0,0,0" SelectionChanged="SourceRoleList_SelectionChanged" Grid.ColumnSpan="2"/>
                 </Grid>
 
                 <Grid Name="SourceRoleSelectSetting"  Grid.Row="2">
-                    <Button Name="SourceRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="SourceRoleSelectModeSwitchButton_Click" >
-                        <materialDesign:PackIcon Kind="FolderTableOutline" Foreground="White"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="69*"/>
+                        <ColumnDefinition Width="61*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="SourceRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="SourceRoleSelectModeSwitchButton_Click" Grid.Column="1" 
+                                ToolTip="切换另一种角色选择方式">
+                        <materialDesign:PackIcon Kind="CounterclockwiseArrows" Foreground="White"/>
                     </Button>
-                    <TextBox Name="SourceSearchRoleSearch" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="218" TextChanged="SourceSearchRoleSearch_TextChanged"/>
+                    <TextBox Name="SourceSearchRoleSearch" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="218" TextChanged="SourceSearchRoleSearch_TextChanged" Grid.ColumnSpan="2"/>
                 </Grid>
 
             </Grid>
@@ -202,7 +213,8 @@
                     </Grid.ColumnDefinitions>
                     <Label Content="目录" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" Margin="15,10,0,0"/>
                     <TextBox Name="TargetFolder" HorizontalAlignment="Left" Height="28" Margin="10,8,0,0" VerticalAlignment="Top" Width="161" MaxLines="1" TextWrapping="NoWrap" AcceptsReturn="False" Text="" TextChanged="TargetFolder_TextChanged" Grid.Row="0" Grid.Column="1" RenderTransformOrigin="0.186,0.571"/>
-                    <Button  Name="TargetBrowse" Content="..." HorizontalAlignment="Left" Margin="171,8,0,0" VerticalAlignment="Top"  Click="TargetBrowse_Click" Width="27" Height="28" Padding="0"  Grid.Row="0" Grid.Column="1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Foreground="White"/>
+                    <Button  Name="TargetBrowse" Content="..." HorizontalAlignment="Left" Margin="168,6,0,0" VerticalAlignment="Top"  Click="TargetBrowse_Click" Width="30" Height="30" Padding="0"  Grid.Row="0" Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Foreground="White"
+                             ToolTip="浏览选择目标游戏目录"/>
                 </Grid>
                 <!-- Layer Select -->
                 <Grid Name="TargetRoleLayerSelect" Grid.Row="1" Visibility="Hidden">
@@ -231,8 +243,9 @@
                 </Grid>
 
                 <Grid Name="TargetRoleSelectSetting"  Grid.Row="2">
-                    <Button Name="TargetRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="TargetRoleSelectModeSwitchButton_Click" >
-                        <materialDesign:PackIcon Kind="FolderTableOutline" Foreground="White"/>
+                    <Button Name="TargetRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="TargetRoleSelectModeSwitchButton_Click" 
+                            ToolTip="切换另一种角色选择方式">
+                        <materialDesign:PackIcon Kind="CounterclockwiseArrows" Foreground="White"/>
                     </Button>
                     <TextBox Name="TargetSearchRoleSearch" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="218" TextChanged="TargetSearchRoleSearch_TextChanged" />
                 </Grid>
@@ -318,10 +331,12 @@
         </Grid>
         <materialDesign:Card HorizontalAlignment="Left" Height="50" Margin="0,260,0,-31" VerticalAlignment="Top" Width="700" Padding="10,10,15,10" Grid.ColumnSpan="2" >
             <Grid>
-                <Button Name="AboutButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" >
+                <Button Name="AboutButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" 
+                        ToolTip="显示关于信息">
                     <materialDesign:PackIcon Kind="InfoOutline" Foreground="White"/>
                 </Button>
-                <Button Name="LogButton" HorizontalAlignment="Right" Margin="0,0,40,0" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="Auto" Click="LogButton_Click" >
+                <Button Name="LogButton" HorizontalAlignment="Right" Margin="0,0,40,0" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="Auto" Click="LogButton_Click" 
+                        ToolTip="打开/关闭日志区域">
                     <materialDesign:PackIcon Kind="Terminal" Foreground="White"/>
                 </Button>
             </Grid>

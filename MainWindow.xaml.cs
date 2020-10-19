@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using System.Windows.Controls;
 using System.IO;
 using System.Collections.Generic;
+using MaterialDesignThemes.Wpf;
 
 namespace JX3SyncAssistant
 {
@@ -514,5 +515,6 @@ namespace JX3SyncAssistant
                 i++;
             }
         }
+
     }
 }
