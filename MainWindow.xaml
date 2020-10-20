@@ -19,12 +19,35 @@
     >
 
     <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="False" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" Value=".56" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <Style TargetType="ListBoxItem">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="Padding" Value="5,0,0,1"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -147,7 +170,7 @@
 
             <!-- Role select grid -->
             <!-- left -->
-            <Grid Name="SourceRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+            <Grid Name="SourceRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Visible" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="34*"/>
@@ -177,10 +200,10 @@
                     <Label Content="账号" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
                     <Label Content="区服" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="1" />
                     <Label Content="角色" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="2" />
-                    <ComboBox Name="SourceAccounts" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Top" Width="190" SelectionChanged="SourceAccounts_SelectionChanged"/>
-                    <ComboBox Name="SourceAreas" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="SourceAreas_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="SourceServers" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="SourceServers_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="SourceRoles" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="SourceRoles_SelectionChanged"/>
+                    <ComboBox Name="SourceAccounts" Padding="0" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Center" Width="190" SelectionChanged="SourceAccounts_SelectionChanged"/>
+                    <ComboBox Name="SourceAreas" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="SourceAreas_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="SourceServers" Padding="0" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="SourceServers_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="SourceRoles" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Center" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="SourceRoles_SelectionChanged"/>
                 </Grid>
                 <!-- Combo Select -->
                 <Grid Name="SourceRoleComboSelect" Grid.Row="1" Visibility="Visible">
@@ -201,7 +224,7 @@
 
             </Grid>
             <!-- right -->
-            <Grid Name="TargetRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Hidden" Grid.Row="1">
+            <Grid Name="TargetRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Visible" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="34*"/>
@@ -218,7 +241,7 @@
                              ToolTip="浏览选择目标游戏目录"/>
                 </Grid>
                 <!-- Layer Select -->
-                <Grid Name="TargetRoleLayerSelect" Grid.Row="1" Visibility="Hidden">
+                <Grid Name="TargetRoleLayerSelect" Grid.Row="1" Visibility="Visible">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="19*" />
                         <ColumnDefinition Width="61*" />
@@ -231,13 +254,13 @@
                     <Label Content="账号" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
                     <Label Content="区服" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="1" />
                     <Label Content="角色" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="2" />
-                    <ComboBox Name="TargetAccounts" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Top" Width="190" SelectionChanged="TargetAccounts_SelectionChanged"/>
-                    <ComboBox Name="TargetAreas" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="TargetAreas_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="TargetServers" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90" Grid.Column="1" SelectionChanged="TargetServers_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="TargetRoles" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="TargetRoles_SelectionChanged"/>
+                    <ComboBox Name="TargetAccounts" Padding="0" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Center" Width="190" SelectionChanged="TargetAccounts_SelectionChanged"/>
+                    <ComboBox Name="TargetAreas" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="TargetAreas_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="TargetServers" Padding="0" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="TargetServers_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="TargetRoles" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Center" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="TargetRoles_SelectionChanged"/>
                 </Grid>
                 <!-- Combo Select -->
-                <Grid Name="TargetRoleComboSelect" Grid.Row="1" Visibility="Visible">
+                <Grid Name="TargetRoleComboSelect" Grid.Row="1" Visibility="Hidden">
                     <ListBox Margin="15,0,0,0" Name="TargetRoleList" SelectionChanged="TargetRoleList_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility = "Disabled">
 
                     </ListBox>
@@ -256,7 +279,7 @@
 
             <!-- file browser -->
             <!-- left -->
-            <Grid Name="SourceFileGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Visible" Grid.Row="1">
+            <Grid Name="SourceFileGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25*"/>
                     <ColumnDefinition Width="86*"/>
@@ -270,7 +293,7 @@
                              ToolTip="浏览选择来源文件路径" Click="SourceFileBrowse_Click"/>
             </Grid>
             <!-- right -->
-            <Grid Name="TargetFileGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Visible" Grid.Row="1">
+            <Grid Name="TargetFileGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Hidden" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25*"/>
                     <ColumnDefinition Width="86*"/>

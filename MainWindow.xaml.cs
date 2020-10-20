@@ -97,7 +97,7 @@ namespace JX3SyncAssistant
                         Label label = new Label
                         {
                             Content = role,
-                            Height = 13,
+                            Height = 14,
                             FontSize = 11,
                             Padding = new Thickness(5, 0, 0, 0)
                         };
@@ -191,7 +191,7 @@ namespace JX3SyncAssistant
                 SourceRoles.Items.Clear();
                 foreach (DirectoryInfo subDir in subDirs)
                 {
-                    Label label = new Label { Content = subDir.Name };
+                    Label label = new Label { Content = subDir.Name};
                     SourceRoles.Items.Add(label);
                 }
                 SourceRoles.SelectedIndex = 0;
@@ -243,7 +243,7 @@ namespace JX3SyncAssistant
                         Label label = new Label
                         {
                             Content = role,
-                            Height = 13,
+                            Height = 14,
                             FontSize = 11,
                             Padding = new Thickness(5, 0, 0, 0)
                         };
