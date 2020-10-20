@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="剑网三同步助手 - JX3SyncAssistant v0.5.0" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.5.1" Height="350" Width="710"
         ResizeMode="CanMinimize"
         Icon="20201013105745897_easyicon_net_128.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -349,7 +349,7 @@
                 <Label Content="复制茗伊插件设置..." Margin="160,0,391,0" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
                 <Label Name="DownloadProgressLabel" Content="0M / 3.1M" Margin="350,0,240,0" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
                 <ProgressBar Name="DownloadProgressBar" Width="120" Height="10" HorizontalAlignment="Left" VerticalAlignment="Center" Value="0" Maximum="100" Margin="435,10,0,10" Visibility="Hidden"/>
-                <Button Name="AboutButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" 
+                <Button Name="AboutButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" 
                         ToolTip="显示关于信息">
                     <materialDesign:PackIcon Kind="InfoOutline" Foreground="White"/>
                 </Button>

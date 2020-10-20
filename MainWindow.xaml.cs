@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using JX3SyncAssistant.Properties;
+using System.Linq;
 
 namespace JX3SyncAssistant
 {
@@ -16,7 +17,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.5.0"; 
+        public const string VERSION = "0.5.1"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -45,6 +46,7 @@ namespace JX3SyncAssistant
                 SourceFolder.Text = "获取程序路径失败，请手动选择";
             }
             Release[] Versions = await Helper.GetVersionsFromGiteeRelease();
+            Versions = Versions.Reverse().ToArray();
             NewVersionUrl = Versions[0].assets[0]["browser_download_url"];
             NewVersionName = Versions[0].assets[0]["name"];
             foreach (Release Version in Versions)
@@ -526,6 +528,7 @@ namespace JX3SyncAssistant
                 "0.3.0增加的内容主要是美化了界面(随之程序体积也变大了x)、增加了一种用户建议的角色选择方式、增加了角色搜索功能以便更加快速找到目标角色\n" +
                 "0.4.0增加的内容主要是支持了通过文件进行导入导出方便去网吧游玩的玩家、添加了每个按钮上的Tooltip\n" +
                 "0.5.0增加的内容主要是新增了保存目录设置、更多的获取游戏目录方式、更新检查功能，同时修复了一些地方没法显示下划线的问题\n" +
+                "0.5.1修复了0.5.0自动更新检测存在的问题" +
                 "软件版本 0.5.0", "关于");
         }
 
