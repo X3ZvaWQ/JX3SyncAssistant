@@ -664,13 +664,23 @@ namespace JX3SyncAssistant
             }
         }
 
-        public async static Task<Release[]> GetVersionsFromGiteeRelease()
+        public async static Task<Release[]> GetVersionsFromGiteeRelease(TextBox LogPanel)
         {
-            WebClient wc = new WebClient();
-            wc.Encoding = Encoding.UTF8;
-            string versionsString = await wc.DownloadStringTaskAsync("https://gitee.com/api/v5/repos/x3zvawq/JX3SyncAssistant/releases");
-            Release[] versions = JsonSerializer.Deserialize<Release[]>(versionsString);
-            return versions;
+            try
+            {
+                WebClient wc = new WebClient();
+                wc.Encoding = Encoding.UTF8;
+                string versionsString = await wc.DownloadStringTaskAsync("https://gitee.com/api/v5/repos/x3zvawq/JX3SyncAssistant/releases");
+                Release[] versions = JsonSerializer.Deserialize<Release[]>(versionsString);
+                return versions;
+            }
+            catch(Exception E)
+            {
+                Log(E.Message, LogPanel);
+                Log(E.StackTrace, LogPanel);
+                Log("ERROR: Get new version info error! please check your network", LogPanel);
+                return new Release[0];
+            }
         }
     }
 }

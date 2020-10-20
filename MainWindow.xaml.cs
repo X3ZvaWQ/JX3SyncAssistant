@@ -45,21 +45,24 @@ namespace JX3SyncAssistant
                 TargetFolder.Text = "获取程序路径失败，请手动选择";
                 SourceFolder.Text = "获取程序路径失败，请手动选择";
             }
-            Release[] Versions = await Helper.GetVersionsFromGiteeRelease();
+            Release[] Versions = await Helper.GetVersionsFromGiteeRelease(LogPanel);
             Versions = Versions.Reverse().ToArray();
-            NewVersionUrl = Versions[0].assets[0]["browser_download_url"];
-            NewVersionName = Versions[0].assets[0]["name"];
-            foreach (Release Version in Versions)
+            if(Versions.Length > 0)
             {
-                if( Version.name.Substring(1) == VERSION)
+                NewVersionUrl = Versions[0].assets[0]["browser_download_url"];
+                NewVersionName = Versions[0].assets[0]["name"];
+                foreach (Release Version in Versions)
                 {
-                    break;
+                    if (Version.name.Substring(1) == VERSION)
+                    {
+                        break;
+                    }
+                    NewVersionBody += $"{Version.name}\n{Version.body}\n";
                 }
-                NewVersionBody += $"{Version.name}\n{Version.body}\n";
-            }
-            if (NewVersionBody != "")
-            {
-                UpdateButton.Visibility = Visibility.Visible;
+                if (NewVersionBody != "")
+                {
+                    UpdateButton.Visibility = Visibility.Visible;
+                }
             }
         }
 
