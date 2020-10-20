@@ -4,9 +4,9 @@ using Microsoft.Win32;
 using System.Windows.Controls;
 using System.IO;
 using System.Collections.Generic;
-using MaterialDesignThemes.Wpf;
-using System.Windows.Media;
-using JX3SyncAssistant.Properties;
+using System.Net;
+using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace JX3SyncAssistant
 {
@@ -16,9 +16,17 @@ namespace JX3SyncAssistant
     public partial class MainWindow : Window
     {
         public const string VERSION = "0.4.0"; 
+        public string NewVersionBody = "";
+        public string NewVersionUrl = "";
+        public string NewVersionName = "";
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void MainWindowLoaded(object sender, RoutedEventArgs e)
+        {
             SourceSelect.SelectedIndex = 0;
             TargetSelect.SelectedIndex = 0;
             SourceFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
@@ -32,6 +40,21 @@ namespace JX3SyncAssistant
             {
                 TargetFolder.Text = "获取程序路径失败，请手动选择";
                 SourceFolder.Text = "获取程序路径失败，请手动选择";
+            }
+            Release[] Versions = await Helper.GetVersionsFromGiteeRelease();
+            NewVersionUrl = Versions[0].assets[0]["browser_download_url"];
+            NewVersionName = Versions[0].assets[0]["name"];
+            foreach (Release Version in Versions)
+            {
+                if( Version.name.Substring(1) == VERSION)
+                {
+                    break;
+                }
+                NewVersionBody += $"{Version.name}\n{Version.body}\n";
+            }
+            if (NewVersionBody != "")
+            {
+                UpdateButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -603,6 +626,44 @@ namespace JX3SyncAssistant
                 string folder = sfd.FileName;
                 TargetFilePath.Text = folder;
             }
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(NewVersionBody + "\n\n是否需要现在下载？按确定下载，取消当作没看到（ \n文件将会被下载到本程序的同目录，您也可以去本程序的发布页面自行下载。\n注意:由于我比较穷，所以使用的是gitee的release下载，所以下载的速度不会很快", "一个告诉你有更新的对话框", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                try
+                {
+                    DownloadProgressBar.Visibility = Visibility.Visible;
+                    DownloadProgressLabel.Visibility = Visibility.Visible;
+                    WebClient wc = new WebClient();
+                    wc.DownloadProgressChanged += DownloadProgressChanged;
+                    wc.DownloadFileCompleted += DownloadFileCompleted;
+                    Helper.Log($"INFO: Start download new version app from \"{NewVersionUrl}\" to \"{NewVersionName}\" failed", LogPanel);
+
+                    wc.DownloadFileAsync(new Uri(NewVersionUrl), NewVersionName);
+                }
+                catch(Exception E)
+                {
+                    Helper.Log($"ERROR: Downloading new version app from \"{NewVersionUrl}\" to \"{NewVersionName}\" failed", LogPanel);
+                    Helper.Log(E.Message, LogPanel);
+                    Helper.Log(E.StackTrace, LogPanel);
+                }
+                
+            }
+        }
+        
+        private void DownloadFileCompleted(object sender,AsyncCompletedEventArgs e)
+        {
+            DownloadProgressBar.Visibility = Visibility.Hidden;
+            DownloadProgressLabel.Visibility = Visibility.Hidden;
+        }
+
+        private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            DownloadProgressBar.Maximum = 0;
+            DownloadProgressBar.Maximum = (int)e.TotalBytesToReceive;
+            DownloadProgressBar.Value = (int)e.BytesReceived;
+            DownloadProgressLabel.Content = $"{string.Format("{0:F}", e.BytesReceived/1024/1024.0)}M/{string.Format("{0:F}", e.TotalBytesToReceive/1024/1024.0)}M";
         }
     }
 }

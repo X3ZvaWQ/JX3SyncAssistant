@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Net;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -507,6 +510,15 @@ namespace JX3SyncAssistant
                 }
                 j++;
             }
+        }
+
+        public async static Task<Release[]> GetVersionsFromGiteeRelease()
+        {
+            WebClient wc = new WebClient();
+            wc.Encoding = Encoding.UTF8;
+            string versionsString = await wc.DownloadStringTaskAsync("https://gitee.com/api/v5/repos/x3zvawq/JX3SyncAssistant/releases");
+            Release[] versions = JsonSerializer.Deserialize<Release[]>(versionsString);
+            return versions;
         }
     }
 }

@@ -15,6 +15,7 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
+        Loaded="MainWindowLoaded"
     >
 
     <Window.Resources>
@@ -321,6 +322,10 @@
         </Grid>
         <materialDesign:Card HorizontalAlignment="Left" Height="50" Margin="0,260,0,-31" VerticalAlignment="Top" Width="700" Padding="10,10,15,10" Grid.ColumnSpan="2" >
             <Grid>
+                <ProgressBar Name="StatusProgressBar" Width="160" Height="10" HorizontalAlignment="Left" VerticalAlignment="Center" Value="60" Maximum="100" Visibility="Hidden"/>
+                <Label Content="复制茗伊插件设置..." Margin="160,0,391,0" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
+                <Label Name="DownloadProgressLabel" Content="0M / 3.1M" Margin="350,0,240,0" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
+                <ProgressBar Name="DownloadProgressBar" Width="120" Height="10" HorizontalAlignment="Left" VerticalAlignment="Center" Value="0" Maximum="100" Margin="435,10,0,10" Visibility="Hidden"/>
                 <Button Name="AboutButton" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" 
                         ToolTip="显示关于信息">
                     <materialDesign:PackIcon Kind="InfoOutline" Foreground="White"/>
@@ -329,8 +334,12 @@
                         ToolTip="打开/关闭日志区域">
                     <materialDesign:PackIcon Kind="Terminal" Foreground="White"/>
                 </Button>
+                <Button x:Name="UpdateButton" HorizontalAlignment="Right" Margin="0,0,80,0" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="UpdateButton_Click" 
+                    ToolTip="查看更新" VerticalAlignment="Top" Visibility="Hidden">
+                    <materialDesign:PackIcon Kind="ArrowTopCircleOutline" Foreground="White"/>
+                </Button>
             </Grid>
         </materialDesign:Card>
-        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Consolas" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Grid.ColumnSpan="2" Text="虽然这里目前空荡荡的像是花哥的头顶，但是这里确实就是日志区了"/>
+        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Consolas" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Grid.ColumnSpan="2" Text="虽然这里目前空荡荡的像是花蛤的头顶，但是这里确实就是日志区了"/>
     </Grid>
 </Window>
