@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using JX3SyncAssistant.Properties;
 
 namespace JX3SyncAssistant
 {
@@ -15,7 +16,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.4.0"; 
+        public const string VERSION = "0.5.0"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -33,11 +34,13 @@ namespace JX3SyncAssistant
             TargetFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
             try
             {
-                SourceFolder.Text = Helper.GetGameFolderFromReg(SourceSelect.SelectedIndex != 0) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
-                TargetFolder.Text = Helper.GetGameFolderFromReg(TargetSelect.SelectedIndex != 0) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
+                SourceFolder.Text = Helper.GetGameFolder(SourceSelect.SelectedIndex != 0, LogPanel);
+                TargetFolder.Text = Helper.GetGameFolder(TargetSelect.SelectedIndex != 0, LogPanel);
             }
-            catch
+            catch(Exception E)
             {
+                Helper.Log(E.Message, LogPanel);
+                Helper.Log(E.StackTrace, LogPanel);
                 TargetFolder.Text = "获取程序路径失败，请手动选择";
                 SourceFolder.Text = "获取程序路径失败，请手动选择";
             }
@@ -366,6 +369,16 @@ namespace JX3SyncAssistant
                     try
                     {
                         string SourceGameFolder = SourceFolder.Text;
+                        if(SourceSelect.SelectedIndex == 0)
+                        {
+                            Settings.Default.GameFolder = SourceGameFolder;
+                        }
+                        else
+                        {
+                            Settings.Default.ExpGameFolder = SourceGameFolder;
+                        }
+                        Settings.Default.Save();
+
                         Dictionary<string, string> roleInfo = new Dictionary<string, string> {
                             { "account", (string)(SourceAccounts.SelectedItem as Label).Content },
                             { "area", (string)(SourceAreas.SelectedItem as Label).Content },
@@ -411,6 +424,16 @@ namespace JX3SyncAssistant
                     try
                     {
                         string TargetGameFolder = TargetFolder.Text;
+                        if (SourceSelect.SelectedIndex == 0)
+                        {
+                            Settings.Default.GameFolder = TargetGameFolder;
+                        }
+                        else
+                        {
+                            Settings.Default.ExpGameFolder = TargetGameFolder;
+                        }
+                        Settings.Default.Save();
+
                         Dictionary<string, string> roleInfo = new Dictionary<string, string> {
                             { "account", (string)(TargetAccounts.SelectedItem as Label).Content },
                             { "area", (string)(TargetAreas.SelectedItem as Label).Content },
@@ -502,7 +525,8 @@ namespace JX3SyncAssistant
                 "0.2.1修复了0.2.0 迁移茗伊数据选项对于 没有导入目标监控数据 的用户会报错导致迁移失败\n" +
                 "0.3.0增加的内容主要是美化了界面(随之程序体积也变大了x)、增加了一种用户建议的角色选择方式、增加了角色搜索功能以便更加快速找到目标角色\n" +
                 "0.4.0增加的内容主要是支持了通过文件进行导入导出方便去网吧游玩的玩家、添加了每个按钮上的Tooltip\n" +
-                "软件版本 0.4.0", "关于");
+                "0.5.0增加的内容主要是新增了保存目录设置、更多的获取游戏目录方式、更新检查功能，同时修复了一些地方没法显示下划线的问题\n" +
+                "软件版本 0.5.0", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="剑网三同步助手 - JX3SyncAssistant v0.4.0" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.5.0" Height="350" Width="710"
         ResizeMode="CanMinimize"
         Icon="20201013105745897_easyicon_net_128.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

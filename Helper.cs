@@ -1,18 +1,18 @@
-﻿using Microsoft.Win32;
+﻿using JX3SyncAssistant.Properties;
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace JX3SyncAssistant
 {
@@ -448,15 +448,167 @@ namespace JX3SyncAssistant
             File.Delete(zip);
         }
 
-        public static string GetGameFolderFromReg(bool isExp)
+        public static string GetGameFolder(bool isExp, TextBox LogPanel)
         {
+            string result;
+            result = GetGameFolderFromSettings(isExp, LogPanel);
+            if (result != null) return result;
+            result = GetGameFolderFromInstallerReg(isExp, LogPanel);
+            if (result != null) return result; 
+            result = GetGameFolderFromKingsoftReg(isExp, LogPanel);
+            if (result != null) return result;
+            result = GetGameFolderFromLauncher(isExp, LogPanel);
+            if (result != null) return result;
+            return null;
+        }
+
+        public static string GetGameFolderFromLauncher(bool isExp, TextBox LogPanel)
+        {
+            string result = "";
+            Log("INFO: Try to find the path through the running launcher", LogPanel);
+            try
+            {
+                Process[] processes = Process.GetProcessesByName("XLauncher");
+                if (processes.Length == 0)
+                {
+                    Log("WARN: The running launcher was not found. Try to find the path through the registry", LogPanel);
+                    return null;
+                }
+                foreach (Process process in processes)
+                {
+                    string basePath = Path.GetDirectoryName(process.MainModule.FileName);
+                    if (isExp)
+                    {
+                        if (Directory.Exists($@"{basePath}\Game\JX3_EXP\bin\zhcn_exp"))
+                        {
+                            Log($"INFO: The running launcher was found. The determined path is \"{basePath}\\Game\\JX3_EXP\\bin\\zhcn_exp\"", LogPanel);
+                            result = $@"{basePath}\Game\JX3_EXP\bin\zhcn_exp";
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (Directory.Exists($@"{basePath}\Game\JX3\bin\zhcn_hd"))
+                        {
+                            Log($"INFO: The running launcher was found. The determined path is \"{basePath}\\Game\\JX3\\bin\\zhcn_hd\"", LogPanel);
+                            result = $@"{basePath}\Game\JX3\bin\zhcn_hd";
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+                return result;
+            }
+            catch(Exception E)
+            {
+                Log("ERROR: Try to find the path through the registry running launcher error", LogPanel);
+                Log(E.Message, LogPanel);
+                Log(E.StackTrace, LogPanel);
+                return null;
+            }
+            
+        }
+
+        public static string GetGameFolderFromInstallerReg(bool isExp, TextBox LogPanel)
+        {
+            Log("INFO: Try to find the path through the register \"HKEY_LOCAL_MACHINE\\SOFTWARE\\JX3Installer\"", LogPanel);
             RegistryKey localMachine = Environment.Is64BitOperatingSystem == true ?
                             RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
                             RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
 
             string registry_key = !isExp ? @"SOFTWARE\JX3Installer" : @"SOFTWARE\JX3Installer_EXP";
-            string result = localMachine.OpenSubKey(registry_key, false).GetValue("InstPath").ToString();
-            return result;
+            string basePath = "";
+            try
+            {
+                basePath = localMachine.OpenSubKey(registry_key, false).GetValue("InstPath").ToString();
+            }
+            catch
+            {
+                Log($"WARN: the register \"HKEY_LOCAL_MACHINE\\SOFTWARE\\JX3Installer\" not found", LogPanel);
+                Log("INFO: Try to find the path through the register \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Kingsoft\\JX3|JX3_EXP\"", LogPanel);
+                return null;
+            }
+            if (isExp)
+            {
+                if (Directory.Exists($@"{basePath}\Game\JX3_EXP\bin\zhcn_exp"))
+                {
+                    Log($"INFO: The determined path is \"{basePath}\\Game\\JX3_EXP\\bin\\zhcn_exp\"", LogPanel);
+                    return $@"{basePath}\Game\JX3_EXP\bin\zhcn_exp";
+                }
+            }
+            else
+            {
+                if (Directory.Exists($@"{basePath}\Game\JX3\bin\zhcn_hd"))
+                {
+                    Log($"INFO: The determined path is \"{basePath}\\Game\\JX3\\bin\\zhcn_hd\"", LogPanel);
+                    return $@"{basePath}\Game\JX3\bin\zhcn_hd";
+                }
+            }
+            Log("INFO: Try to find the path through the register \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Kingsoft\\JX3|JX3_EXP\"", LogPanel);
+            return null;
+        }
+
+        public static string GetGameFolderFromKingsoftReg(bool isExp, TextBox LogPanel)
+        {
+            Log("INFO: Try to find the path through the register \"HKEY_LOCAL_MACHINE\\SOFTWARE\\JX3Installer\"", LogPanel);
+            RegistryKey localMachine = Environment.Is64BitOperatingSystem == true ?
+                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
+                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+
+            string registry_key = !isExp ? @"SOFTWARE\Kingsoft\JX3\zhcn_hd" : @"SOFTWARE\Kingsoft\JX3\zhcn_exp";
+            string basePath;
+            try
+            {
+                basePath = localMachine.OpenSubKey(registry_key, false).GetValue("installPath").ToString();
+            }
+            catch
+            {
+                Log($"WARN: the register \"SOFTWARE\\Kingsoft\\JX3\" not found", LogPanel);
+                Log("WARN: Sorry, Please select folder by yourself", LogPanel);
+                return null;
+            }
+            if (isExp)
+            {
+                if (Directory.Exists($@"{basePath}\Game\JX3_EXP\bin\zhcn_exp"))
+                {
+                    Log($"INFO: The determined path is \"{basePath}\"", LogPanel);
+                    return $@"{basePath}";
+                }
+            }
+            else
+            {
+                if (Directory.Exists($@"{basePath}\Game\JX3\bin\zhcn_hd"))
+                {
+                    Log($"INFO: The determined path is \"{basePath}\"", LogPanel);
+                    return $@"{basePath}";
+                }
+            }
+            Log("WARN: Sorry, Please select folder by yourself", LogPanel);
+            return null;
+        }
+
+        public static string GetGameFolderFromSettings(bool isExp, TextBox LogPanel)
+        {
+            string result;
+            if (isExp)
+            {
+                result = Settings.Default.ExpGameFolder;
+            }
+            else
+            {
+                result = Settings.Default.GameFolder;
+            }
+
+            if (result != null && result != "") {
+                Log($"INFO: The determined path is \"{result}\" from settings", LogPanel);
+                return result;
+            };
+            return null;
         }
 
         public static void Log(string str, TextBox logPanel)
