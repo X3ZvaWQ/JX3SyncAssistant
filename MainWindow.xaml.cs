@@ -76,9 +76,36 @@ namespace JX3SyncAssistant
                     Helper.Log(E.StackTrace, LogPanel);
                     SourceFolder.Text = "获取程序路径失败，请手动选择";
                 }
+                if(Settings.Default.SourceRoleSelect == "combo")
+                {
+                    if (Settings.Default.DataLoadFrom != null && Settings.Default.DataLoadFrom != "")
+                    {
+                        SourceFilePath.Text = Settings.Default.DataLoadFrom;
+                    }
+                    else
+                    {
+                        SourceFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
+                    }
+
+                    SourceRoleComboSelect.Visibility = Visibility.Visible;
+                    SourceRoleLayerSelect.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    SourceRoleComboSelect.Visibility = Visibility.Hidden;
+                    SourceRoleLayerSelect.Visibility = Visibility.Visible;
+                }
             }
             else if(SourceSelect.SelectedIndex == 2)
             {
+                if (Settings.Default.DataLoadFrom != null && Settings.Default.DataLoadFrom != "")
+                {
+                    SourceFilePath.Text = Settings.Default.DataLoadFrom;
+                }
+                else
+                {
+                    SourceFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
+                }
                 SourceFileGrid.Visibility = Visibility.Visible;
             }
             else if (SourceSelect.SelectedIndex == 3)
@@ -237,9 +264,27 @@ namespace JX3SyncAssistant
                     Helper.Log(E.StackTrace, LogPanel);
                     TargetFolder.Text = "获取程序路径失败，请手动选择";
                 }
+                if (Settings.Default.TargetRoleSelect == "combo")
+                {
+                    TargetRoleComboSelect.Visibility = Visibility.Visible;
+                    TargetRoleLayerSelect.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    TargetRoleComboSelect.Visibility = Visibility.Hidden;
+                    TargetRoleLayerSelect.Visibility = Visibility.Visible;
+                }
             }
             else if (TargetSelect.SelectedIndex == 2)
             {
+                if (Settings.Default.DataSaveTo != null && Settings.Default.DataSaveTo != "")
+                {
+                    TargetFilePath.Text = Settings.Default.DataSaveTo;
+                }
+                else
+                {
+                    TargetFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
+                }
                 TargetFileGrid.Visibility = Visibility.Visible;
             }
             else if (TargetSelect.SelectedIndex == 3)
@@ -417,6 +462,14 @@ namespace JX3SyncAssistant
                         {
                             Settings.Default.ExpGameFolder = SourceGameFolder;
                         }
+                        if(SourceRoleComboSelect.Visibility == Visibility.Visible)
+                        {
+                            Settings.Default.SourceRoleSelect = "combo";
+                        }
+                        else
+                        {
+                            Settings.Default.SourceRoleSelect = "layer";
+                        }
                         Settings.Default.Save();
 
                         Dictionary<string, string> roleInfo = new Dictionary<string, string> {
@@ -447,6 +500,8 @@ namespace JX3SyncAssistant
                     if (File.Exists(SourceFilePath.Text))
                     {
                         File.Copy(SourceFilePath.Text, AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip", true);
+                        Settings.Default.DataLoadFrom = SourceFilePath.Text;
+                        Settings.Default.Save();
                     }
                     else
                     {
@@ -496,6 +551,14 @@ namespace JX3SyncAssistant
                         {
                             Settings.Default.ExpGameFolder = TargetGameFolder;
                         }
+                        if (TargetRoleComboSelect.Visibility == Visibility.Visible)
+                        {
+                            Settings.Default.TargetRoleSelect = "combo";
+                        }
+                        else
+                        {
+                            Settings.Default.TargetRoleSelect = "layer";
+                        }
                         Settings.Default.Save();
 
                         Dictionary<string, string> roleInfo = new Dictionary<string, string> {
@@ -537,6 +600,8 @@ namespace JX3SyncAssistant
                         }
                         File.Move("userdata.zip", TargetFilePath.Text);
                         Helper.Log($"INFO: file \"userdata.zip\" has been moved to {TargetFilePath.Text}", LogPanel);
+                        Settings.Default.DataSaveTo = TargetFilePath.Text;
+                        Settings.Default.Save();
                     }
                     catch (Exception E)
                     {
@@ -578,11 +643,11 @@ namespace JX3SyncAssistant
 
         private void processEnd()
         {
-            if (SourceSelect.SelectedIndex == 2 && SourceSelect.SelectedIndex == 2)
+            if (SourceSelect.SelectedIndex == 2 && TargetSelect.SelectedIndex == 2)
             {
                 MessageBox.Show("我已经听话地把这个文件已经从左边移到右边了\n\n但是您为什么不自己Ctrl+C Ctrl+V呢  w(ﾟДﾟ)w", "表示疑惑的提示框");
             }
-            else if (SourceSelect.SelectedIndex == 3 && SourceSelect.SelectedIndex == 3)
+            else if (SourceSelect.SelectedIndex == 3 && TargetSelect.SelectedIndex == 3)
             {
                 MessageBox.Show("别皮了，后台储存数据是根据文件的摘要储存的，就算你这么操作了也不会发生任何事情 w(ﾟДﾟ)w", "表示疑惑的提示框");
             }
@@ -737,7 +802,16 @@ namespace JX3SyncAssistant
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "ZipFile |*.zip";
-            ofd.FileName = "XLauncher.exe";
+            try
+            {
+                ofd.InitialDirectory = Path.GetDirectoryName(SourceFilePath.Text);
+                ofd.FileName = Path.GetFileName(SourceFilePath.Text);
+            }
+            catch
+            {
+                ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                ofd.FileName = "userdata.zip";
+            }
             if (ofd.ShowDialog() == true)
             {
                 string folder = ofd.FileName;
@@ -749,6 +823,14 @@ namespace JX3SyncAssistant
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "ZipFile | *.zip";
+            try
+            {
+                sfd.InitialDirectory = Path.GetDirectoryName(TargetFilePath.Text);
+            }
+            catch
+            {
+                sfd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            }
             sfd.FileName = "userdata.zip";
             if (sfd.ShowDialog() == true)
             {

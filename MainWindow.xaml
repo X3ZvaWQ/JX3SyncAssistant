@@ -199,10 +199,10 @@
                     <Label Content="账号" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
                     <Label Content="区服" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="1" />
                     <Label Content="角色" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="2" />
-                    <ComboBox Name="SourceAccounts" Padding="0" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Center" Width="190" SelectionChanged="SourceAccounts_SelectionChanged"/>
+                    <ComboBox Name="SourceAccounts" Padding="0" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,12,0,1" Grid.Row="0" VerticalAlignment="Center" Width="188" SelectionChanged="SourceAccounts_SelectionChanged"/>
                     <ComboBox Name="SourceAreas" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="SourceAreas_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="SourceServers" Padding="0" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="SourceServers_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="SourceRoles" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Center" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="SourceRoles_SelectionChanged"/>
+                    <ComboBox Name="SourceServers" Padding="0" HorizontalAlignment="Left" Height="28" Margin="110,12,0,2" Grid.Row="1" VerticalAlignment="Center" Width="88" Grid.Column="1" SelectionChanged="SourceServers_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="SourceRoles" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,12,0,1" Grid.Row="2" VerticalAlignment="Center" Width="188" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="SourceRoles_SelectionChanged"/>
                 </Grid>
                 <!-- Combo Select -->
                 <Grid Name="SourceRoleComboSelect" Grid.Row="1" Visibility="Visible">
@@ -214,7 +214,7 @@
                 </Grid>
 
                 <Grid Name="SourceRoleSelectSetting"  Grid.Row="2">
-                    <Button Name="SourceRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,0" Width="30" Height="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" VerticalAlignment="Top" Click="SourceRoleSelectModeSwitchButton_Click" Grid.Column="1" 
+                    <Button Name="SourceRoleSelectModeSwitchButton" HorizontalAlignment="Right" Margin="0,4,0,3" Width="30" Height="Auto" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Click="SourceRoleSelectModeSwitchButton_Click" 
                                 ToolTip="切换另一种角色选择方式">
                         <materialDesign:PackIcon Kind="CounterclockwiseArrows" Foreground="White"/>
                     </Button>
@@ -240,7 +240,7 @@
                              ToolTip="浏览选择目标游戏目录"/>
                 </Grid>
                 <!-- Layer Select -->
-                <Grid Name="TargetRoleLayerSelect" Grid.Row="1" Visibility="Visible">
+                <Grid Name="TargetRoleLayerSelect" Grid.Row="1" Visibility="Hidden">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="19*" />
                         <ColumnDefinition Width="61*" />
@@ -253,13 +253,13 @@
                     <Label Content="账号" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="0" />
                     <Label Content="区服" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="1" />
                     <Label Content="角色" HorizontalAlignment="Left" Height="26" Margin="15,10,0,0" VerticalAlignment="Top" Width="36" Grid.Column="0" Grid.Row="2" />
-                    <ComboBox Name="TargetAccounts" Padding="0" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="0" VerticalAlignment="Center" Width="190" SelectionChanged="TargetAccounts_SelectionChanged"/>
+                    <ComboBox Name="TargetAccounts" Padding="0" Grid.Column="1" HorizontalAlignment="Left" Height="28" Margin="10,12,0,1" Grid.Row="0" VerticalAlignment="Center" Width="188" SelectionChanged="TargetAccounts_SelectionChanged"/>
                     <ComboBox Name="TargetAreas" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="TargetAreas_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="TargetServers" Padding="0" HorizontalAlignment="Left" Height="28" Margin="110,10,0,0" Grid.Row="1" VerticalAlignment="Center" Width="90" Grid.Column="1" SelectionChanged="TargetServers_SelectionChanged" FontSize="12"/>
-                    <ComboBox Name="TargetRoles" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Center" Width="190" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="TargetRoles_SelectionChanged"/>
+                    <ComboBox Name="TargetServers" Padding="0" HorizontalAlignment="Left" Height="28" Margin="110,12,0,2" Grid.Row="1" VerticalAlignment="Center" Width="88" Grid.Column="1" SelectionChanged="TargetServers_SelectionChanged" FontSize="12"/>
+                    <ComboBox Name="TargetRoles" Padding="0" HorizontalAlignment="Left" Height="28" Margin="10,12,0,1" Grid.Row="2" VerticalAlignment="Center" Width="188" Grid.Column="1" RenderTransformOrigin="0.663,0.571" SelectionChanged="TargetRoles_SelectionChanged"/>
                 </Grid>
                 <!-- Combo Select -->
-                <Grid Name="TargetRoleComboSelect" Grid.Row="1" Visibility="Hidden">
+                <Grid Name="TargetRoleComboSelect" Grid.Row="1" Visibility="Visible">
                     <ListBox Margin="15,0,0,0" Name="TargetRoleList" SelectionChanged="TargetRoleList_SelectionChanged" ScrollViewer.VerticalScrollBarVisibility = "Disabled">
 
                     </ListBox>

@@ -46,5 +46,53 @@ namespace JX3SyncAssistant.Properties {
                 this["ExpGameFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SourceRoleSelect {
+            get {
+                return ((string)(this["SourceRoleSelect"]));
+            }
+            set {
+                this["SourceRoleSelect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TargetRoleSelect {
+            get {
+                return ((string)(this["TargetRoleSelect"]));
+            }
+            set {
+                this["TargetRoleSelect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DataSaveTo {
+            get {
+                return ((string)(this["DataSaveTo"]));
+            }
+            set {
+                this["DataSaveTo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DataLoadFrom {
+            get {
+                return ((string)(this["DataLoadFrom"]));
+            }
+            set {
+                this["DataLoadFrom"] = value;
+            }
+        }
     }
 }
