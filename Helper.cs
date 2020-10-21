@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -60,8 +61,7 @@ namespace JX3SyncAssistant
         public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options, TextBox logPanel)
         {
             Profile profile = new Profile {
-                version = MainWindow.VERSION,
-                created_at = DateTime.Now
+                version = MainWindow.VERSION
             };
             Dictionary<string, string[]> allFiles= new Dictionary<string, string[]>();
             try
@@ -682,5 +682,6 @@ namespace JX3SyncAssistant
                 return new Release[0];
             }
         }
+   
     }
 }

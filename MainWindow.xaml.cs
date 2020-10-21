@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using JX3SyncAssistant.Properties;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace JX3SyncAssistant
 {
@@ -17,10 +18,11 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.5.1"; 
+        public const string VERSION = "0.6.0"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
+        public string resultMD5 = "";
 
         public MainWindow()
         {
@@ -33,18 +35,7 @@ namespace JX3SyncAssistant
             TargetSelect.SelectedIndex = 0;
             SourceFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
             TargetFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
-            try
-            {
-                SourceFolder.Text = Helper.GetGameFolder(SourceSelect.SelectedIndex != 0, LogPanel);
-                TargetFolder.Text = Helper.GetGameFolder(TargetSelect.SelectedIndex != 0, LogPanel);
-            }
-            catch(Exception E)
-            {
-                Helper.Log(E.Message, LogPanel);
-                Helper.Log(E.StackTrace, LogPanel);
-                TargetFolder.Text = "获取程序路径失败，请手动选择";
-                SourceFolder.Text = "获取程序路径失败，请手动选择";
-            }
+           
             Release[] Versions = await Helper.GetVersionsFromGiteeRelease(LogPanel);
             Versions = Versions.Reverse().ToArray();
             if(Versions.Length > 0)
@@ -70,15 +61,30 @@ namespace JX3SyncAssistant
         {
             SourceRoleGrid.Visibility = Visibility.Hidden;
             SourceFileGrid.Visibility = Visibility.Hidden;
+            SourceUrlGrid.Visibility = Visibility.Hidden;
+
             if (SourceSelect.SelectedIndex == 0 || SourceSelect.SelectedIndex == 1)
             {
                 SourceRoleGrid.Visibility = Visibility.Visible;
+                try
+                {
+                    SourceFolder.Text = Helper.GetGameFolder(SourceSelect.SelectedIndex != 0, LogPanel);
+                }
+                catch (Exception E)
+                {
+                    Helper.Log(E.Message, LogPanel);
+                    Helper.Log(E.StackTrace, LogPanel);
+                    SourceFolder.Text = "获取程序路径失败，请手动选择";
+                }
             }
             else if(SourceSelect.SelectedIndex == 2)
             {
                 SourceFileGrid.Visibility = Visibility.Visible;
             }
-
+            else if (SourceSelect.SelectedIndex == 3)
+            {
+                SourceUrlGrid.Visibility = Visibility.Visible;
+            }
         }
 
         private void SourceFolder_TextChanged(object sender, TextChangedEventArgs e)
@@ -216,13 +222,29 @@ namespace JX3SyncAssistant
         {
             TargetRoleGrid.Visibility = Visibility.Hidden;
             TargetFileGrid.Visibility = Visibility.Hidden;
+            TargetUrlGrid.Visibility = Visibility.Hidden;
+
             if (TargetSelect.SelectedIndex == 0 || TargetSelect.SelectedIndex == 1)
             {
                 TargetRoleGrid.Visibility = Visibility.Visible;
+                try
+                {
+                    TargetFolder.Text = Helper.GetGameFolder(TargetSelect.SelectedIndex != 0, LogPanel);
+                }
+                catch (Exception E)
+                {
+                    Helper.Log(E.Message, LogPanel);
+                    Helper.Log(E.StackTrace, LogPanel);
+                    TargetFolder.Text = "获取程序路径失败，请手动选择";
+                }
             }
             else if (TargetSelect.SelectedIndex == 2)
             {
                 TargetFileGrid.Visibility = Visibility.Visible;
+            }
+            else if (TargetSelect.SelectedIndex == 3)
+            {
+                TargetUrlGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -357,10 +379,23 @@ namespace JX3SyncAssistant
 
         private void Go_Click(object sender, RoutedEventArgs e)
         {
+            Go.IsEnabled = false;
             //get source zip file
-            if(SourceSelect.SelectedIndex == 0 || SourceSelect.SelectedIndex == 1)
+            if (processLeft())
             {
-                if(SourceAccounts.SelectedIndex != -1)
+                //unpack zip file to target
+                if (processRight())
+                {
+                    processEnd();
+                }
+            }
+        }
+
+        private bool processLeft()
+        {
+            if (SourceSelect.SelectedIndex == 0 || SourceSelect.SelectedIndex == 1)
+            {
+                if (SourceAccounts.SelectedIndex != -1)
                 {
                     //get sync options
                     Dictionary<string, bool> options = new Dictionary<string, bool>{
@@ -369,12 +404,12 @@ namespace JX3SyncAssistant
                         { "jx_role_config", (bool)JXNoticeSettings.IsChecked },
                         { "my_role_config", (bool)MYRoleSettings.IsChecked },
                         { "jx_config", (bool)JXGlobalSettings.IsChecked },
-                        { "my_config", (bool)MYGlobalSettings.IsChecked } 
+                        { "my_config", (bool)MYGlobalSettings.IsChecked }
                     };
                     try
                     {
                         string SourceGameFolder = SourceFolder.Text;
-                        if(SourceSelect.SelectedIndex == 0)
+                        if (SourceSelect.SelectedIndex == 0)
                         {
                             Settings.Default.GameFolder = SourceGameFolder;
                         }
@@ -392,12 +427,12 @@ namespace JX3SyncAssistant
                         };
                         Helper.GetZipFromUserdata(SourceGameFolder, "userdata.zip", roleInfo, options, LogPanel);
                     }
-                    catch(Exception E)
+                    catch (Exception E)
                     {
                         Helper.Log("getZipFromUserdata() Run Error!", LogPanel);
                         Helper.Log(E.Message, LogPanel);
                         Helper.Log(E.StackTrace, LogPanel);
-                        return;
+                        return false;
                     }
                 }
                 else
@@ -405,31 +440,55 @@ namespace JX3SyncAssistant
                     MessageBox.Show("请先选择作为数据来源的角色", "表示错误的对话框");
                 }
             }
-            else if(SourceSelect.SelectedIndex == 2)
+            else if (SourceSelect.SelectedIndex == 2)
             {
-                if(SourceFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
+                if (SourceFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
                 {
-                    if(File.Exists(SourceFilePath.Text))
+                    if (File.Exists(SourceFilePath.Text))
                     {
                         File.Copy(SourceFilePath.Text, AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip", true);
                     }
                     else
                     {
                         MessageBox.Show("源文件不存在哦，需要我为您变出来么（？ \n (可以在左边选择角色，右边选择本地数据文件进行文件的导出)", "表示疑惑地对话框");
-                        return;
+                        Go.IsEnabled = true;
+                        return false;
                     }
                 }
             }
+            else if (SourceSelect.SelectedIndex == 3)
+            {
+                try
+                {
+                    string md5 = SourceFileMD5.Text;
+                    WebClient wc = new WebClient();
+                    UploadProgressBar.Visibility = Visibility.Visible;
+                    UploadProgressLabel.Visibility = Visibility.Visible;
+                    wc.DownloadProgressChanged += UploadProgressChanged;
+                    wc.DownloadFileCompleted += DownloadUserdataCompleted;
+                    wc.DownloadFileAsync(new Uri($"http://47.101.177.238/userdata/{md5}.zip"), "userdata.zip");
+                    return false;
+                }
+                catch (Exception E)
+                {
+                    MessageBox.Show("尝试从服务器获取文件的过程中出现错误，请检查网络连接以及数据代码是否正确", "网络错误");
+                    Helper.Log(E.Message, LogPanel);
+                    Helper.Log(E.StackTrace, LogPanel);
+                }
+            }
+            return true;
+        }
 
-            //unpack zip file to target
-            if(TargetSelect.SelectedIndex == 0 || TargetSelect.SelectedIndex == 1)
+        private bool processRight()
+        {
+            if (TargetSelect.SelectedIndex == 0 || TargetSelect.SelectedIndex == 1)
             {
                 if (TargetAccounts.SelectedIndex != -1)
                 {
                     try
                     {
                         string TargetGameFolder = TargetFolder.Text;
-                        if (SourceSelect.SelectedIndex == 0)
+                        if (TargetSelect.SelectedIndex == 0)
                         {
                             Settings.Default.GameFolder = TargetGameFolder;
                         }
@@ -452,7 +511,8 @@ namespace JX3SyncAssistant
                         Helper.Log("UnpackToUserdata() Run Error!", LogPanel);
                         Helper.Log(E.Message, LogPanel);
                         Helper.Log(E.StackTrace, LogPanel);
-                        return;
+                        Go.IsEnabled = true;
+                        return false;
                     }
                 }
                 else
@@ -462,12 +522,13 @@ namespace JX3SyncAssistant
             }
             else if (TargetSelect.SelectedIndex == 2)
             {
-                
+
                 if (TargetFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
                 {
                     try
                     {
-                        if (!Directory.Exists(Path.GetDirectoryName(TargetFilePath.Text))){
+                        if (!Directory.Exists(Path.GetDirectoryName(TargetFilePath.Text)))
+                        {
                             Directory.CreateDirectory(Path.GetDirectoryName(TargetFilePath.Text));
                         }
                         if (File.Exists(TargetFilePath.Text))
@@ -485,14 +546,51 @@ namespace JX3SyncAssistant
                     }
                 }
             }
-            if(SourceSelect.SelectedIndex == 2 && SourceSelect.SelectedIndex == 2)
+            else if (TargetSelect.SelectedIndex == 3)
+            {
+                try
+                {
+                    MD5 md5 = MD5.Create();
+                    byte[] file = File.ReadAllBytes("userdata.zip");
+                    file = md5.ComputeHash(file);
+                    resultMD5 = "";
+                    foreach (byte b in file)
+                        resultMD5 += b.ToString("x");
+                    Helper.Log($"INFO: userdata's MD5 value is \"{resultMD5}\", start upload", LogPanel);
+
+                    WebClient wc = new WebClient();
+                    UploadProgressBar.Visibility = Visibility.Visible;
+                    UploadProgressLabel.Visibility = Visibility.Visible;
+                    wc.UploadProgressChanged += UploadProgressChanged;
+                    wc.UploadFileCompleted += UploadUserdataCompleted;
+                    wc.UploadFileAsync(new Uri($"http://47.101.177.238/userdata/{resultMD5}.zip"), "PUT", "userdata.zip");
+                    return false;
+                }
+                catch (Exception E)
+                {
+                    MessageBox.Show("尝试上传文件到服务器错误，请打开日志区提交错误报告（x", "网络错误");
+                    Helper.Log(E.Message, LogPanel);
+                    Helper.Log(E.StackTrace, LogPanel);
+                }
+            }
+            return true;
+        }
+
+        private void processEnd()
+        {
+            if (SourceSelect.SelectedIndex == 2 && SourceSelect.SelectedIndex == 2)
             {
                 MessageBox.Show("我已经听话地把这个文件已经从左边移到右边了\n\n但是您为什么不自己Ctrl+C Ctrl+V呢  w(ﾟДﾟ)w", "表示疑惑的提示框");
+            }
+            else if (SourceSelect.SelectedIndex == 3 && SourceSelect.SelectedIndex == 3)
+            {
+                MessageBox.Show("别皮了，后台储存数据是根据文件的摘要储存的，就算你这么操作了也不会发生任何事情 w(ﾟДﾟ)w", "表示疑惑的提示框");
             }
             else
             {
                 MessageBox.Show("没有意外的话应该成功了吧（？", "不太确定的表示操作成功的提示框");
             }
+            Go.IsEnabled = true;
         }
 
         private void SourceBrowse_Click(object sender, RoutedEventArgs e)
@@ -503,7 +601,7 @@ namespace JX3SyncAssistant
             if (ofd.ShowDialog() == true)
             {
                 string folder = ofd.FileName;
-                SourceFolder.Text = Path.GetDirectoryName(folder);
+                SourceFolder.Text = Path.GetDirectoryName(folder) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
             }
         }
 
@@ -515,7 +613,7 @@ namespace JX3SyncAssistant
             if (ofd.ShowDialog() == true)
             {
                 string folder = ofd.FileName;
-                TargetFolder.Text = System.IO.Path.GetDirectoryName(folder);
+                TargetFolder.Text = Path.GetDirectoryName(folder) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
             }
         }
 
@@ -531,8 +629,9 @@ namespace JX3SyncAssistant
                 "0.3.0增加的内容主要是美化了界面(随之程序体积也变大了x)、增加了一种用户建议的角色选择方式、增加了角色搜索功能以便更加快速找到目标角色\n" +
                 "0.4.0增加的内容主要是支持了通过文件进行导入导出方便去网吧游玩的玩家、添加了每个按钮上的Tooltip\n" +
                 "0.5.0增加的内容主要是新增了保存目录设置、更多的获取游戏目录方式、更新检查功能，同时修复了一些地方没法显示下划线的问题\n" +
-                "0.5.1修复了0.5.0自动更新检测存在的问题" +
-                "软件版本 0.5.0", "关于");
+                "0.5.1修复了0.5.0自动更新检测存在的问题\n" +
+                "0.6.0修复了0.5.1在无网络环境下打开会崩溃的问题，添加了简单的云支持" +
+                "软件版本 0.6.0", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)
@@ -681,7 +780,7 @@ namespace JX3SyncAssistant
                 
             }
         }
-        
+
         private void DownloadFileCompleted(object sender,AsyncCompletedEventArgs e)
         {
             DownloadProgressBar.Visibility = Visibility.Hidden;
@@ -693,7 +792,36 @@ namespace JX3SyncAssistant
             DownloadProgressBar.Maximum = 0;
             DownloadProgressBar.Maximum = (int)e.TotalBytesToReceive;
             DownloadProgressBar.Value = (int)e.BytesReceived;
-            DownloadProgressLabel.Content = $"{string.Format("{0:F}", e.BytesReceived/1024/1024.0)}M/{string.Format("{0:F}", e.TotalBytesToReceive/1024/1024.0)}M";
+            DownloadProgressLabel.Content = string.Format("{0:F}M/{1:F}M", e.BytesReceived/1024/1024.0, e.TotalBytesToReceive/1024/1024.0);
+        }
+
+        private void UploadUserdataCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            UploadProgressBar.Visibility = Visibility.Hidden;
+            UploadProgressLabel.Visibility = Visibility.Hidden;
+            TargetFileMD5.Text = resultMD5;
+            processEnd();
+        }
+
+        private void DownloadUserdataCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            UploadProgressBar.Visibility = Visibility.Hidden;
+            UploadProgressLabel.Visibility = Visibility.Hidden;
+            processRight();
+        }
+
+        private void UploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
+        {
+            UploadProgressBar.Maximum = (int)e.TotalBytesToSend;
+            UploadProgressBar.Value = (int)e.BytesSent;
+            UploadProgressLabel.Content = string.Format("{0}K / {1}K", e.BytesSent / 1024, e.TotalBytesToSend / 1024);
+        }
+        
+        private void UploadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            UploadProgressBar.Maximum = (int)e.TotalBytesToReceive;
+            UploadProgressBar.Value = (int)e.BytesReceived;
+            UploadProgressLabel.Content = string.Format("{0}K / {1}K", e.BytesReceived / 1024, e.TotalBytesToReceive / 1024);
         }
     }
 }
