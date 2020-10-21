@@ -344,9 +344,9 @@
         </Grid>
         <materialDesign:Card HorizontalAlignment="Left" Height="50" Margin="0,260,0,-31" VerticalAlignment="Top" Width="700" Padding="10,10,15,10" >
             <Grid>
-                <ProgressBar Name="UploadProgressBar" Width="120" Height="6" HorizontalAlignment="Left" VerticalAlignment="Center" Value="61.8" Maximum="100" Visibility="Hidden" Margin="0,12,0,2"/>
+                <ProgressBar Name="UploadProgressBar" Width="120" Height="6" HorizontalAlignment="Left" VerticalAlignment="Center" Value="0" Maximum="100" Visibility="Hidden"/>
                 <Label Name="UploadProgressLabel" Content="0.00K/0.00K" Margin="125,1,463,-1" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
-                <ProgressBar Name="DownloadProgressBar" Width="120" Height="6" HorizontalAlignment="Left" VerticalAlignment="Center" Value="0" Maximum="100" Margin="435,12,0,2" Visibility="Hidden"/>
+                <ProgressBar Name="DownloadProgressBar" Width="120" Height="6" HorizontalAlignment="Left" VerticalAlignment="Center" Value="0" Maximum="100" Margin="435,0,0,0" Visibility="Hidden"/>
                 <Label Name="DownloadProgressLabel" Content="0M / 3.1M" Margin="350,0,240,0" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
                 <Button Name="AboutButton" HorizontalAlignment="Right" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="Auto" Click="AboutButton_Click" 
                         ToolTip="显示关于信息">

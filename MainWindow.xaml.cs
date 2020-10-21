@@ -797,10 +797,10 @@ namespace JX3SyncAssistant
 
         private void UploadUserdataCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            processEnd();
             UploadProgressBar.Visibility = Visibility.Hidden;
             UploadProgressLabel.Visibility = Visibility.Hidden;
             TargetFileMD5.Text = resultMD5;
-            processEnd();
         }
 
         private void DownloadUserdataCompleted(object sender, AsyncCompletedEventArgs e)
