@@ -78,7 +78,14 @@ namespace JX3SyncAssistant
                             "CoinShopOutfitData.jx3dat",
                             "custom.dat",
                             "custom.dat.addon",
-                            "userpreferences.jx3dat"
+                            "userpreferences.jx3dat",
+                            "hotkey.data",
+                            "hotkey_last.txt",
+                            "hotkey_back0.txt",
+                            "hotkey_back1.txt",
+                            "hotkey_back2.txt",
+                            "hotkey_back3.txt",
+                            "hotkey_back4.txt",
                         };
                         string userdataFolder = SourceData + $@"\userdata\{roleInfo["account"]}\{roleInfo["area"]}\{roleInfo["server"]}\{roleInfo["role"]}\";
                         foreach (string file in file_list)
@@ -89,9 +96,11 @@ namespace JX3SyncAssistant
                                 zipArchive.CreateEntryFromFile(userdataFolder + file, file_name);
                                 files.Add(file_name);
                             }
-                            catch (Exception)
+                            catch (Exception E)
                             {
-                                Console.WriteLine($"Take \"{userdataFolder}{file}\" into Zip File Error！");
+                                Log($"Take \"{userdataFolder}{file}\" into Zip File Error！", logPanel);
+                                Log(E.Message, logPanel);
+                                Log(E.StackTrace, logPanel);
                             }
                         }
                         if (contain_options["userdata_async"])
@@ -102,9 +111,11 @@ namespace JX3SyncAssistant
                                 wc.DownloadFile("http://47.101.177.238/userpreferencesasync.jx3dat", "userpreferencesasync.jx3dat");
                                 wc.Dispose();
                             }
-                            catch
+                            catch (Exception E)
                             {
-                                Console.WriteLine("Download \"userpreferencesasync.jx3dat\" Error！");
+                                Log("Download \"userpreferencesasync.jx3dat\" Error！", logPanel);
+                                Log(E.Message, logPanel);
+                                Log(E.StackTrace, logPanel);
                             }
                             try
                             {
@@ -112,9 +123,11 @@ namespace JX3SyncAssistant
                                 zipArchive.CreateEntryFromFile("userpreferencesasync.jx3dat", file_name);
                                 File.Delete("userpreferencesasync.jx3dat");
                             }
-                            catch (Exception)
+                            catch (Exception E)
                             {
-                                Console.WriteLine("Take \"userpreferencesasync.jx3dat\" into Zip File Error！");
+                                Log("Take \"userpreferencesasync.jx3dat\" into Zip File Error！", logPanel);
+                                Log(E.Message, logPanel);
+                                Log(E.StackTrace, logPanel);
                             }
                         }
                         else
@@ -125,9 +138,11 @@ namespace JX3SyncAssistant
                                 zipArchive.CreateEntryFromFile(userdataFolder + "userpreferencesasync.jx3dat", file_name);
                                 files.Add(file_name);
                             }
-                            catch (Exception)
+                            catch (Exception E)
                             {
-                                Console.WriteLine($"Take {userdataFolder}\"userpreferencesasync.jx3dat\" into Zip File Error！");
+                                Log($"Take {userdataFolder}\"userpreferencesasync.jx3dat\" into Zip File Error！", logPanel);
+                                Log(E.Message, logPanel);
+                                Log(E.StackTrace, logPanel);
                             }
                         }
                         allFiles.Add("userdata", (string[])files.ToArray(typeof(string)));
@@ -298,8 +313,10 @@ namespace JX3SyncAssistant
                     }
                     catch(Exception e)
                     {
-                        Console.WriteLine($"Delete Temp File \"profile.json\" File Error！");
-                        Console.WriteLine(e.StackTrace);
+
+                        Log($"Delete Temp File \"profile.json\" File Error！", logPanel);
+                        Log(e.Message, logPanel);
+                        Log(e.StackTrace, logPanel);
                     }
 
                 }
@@ -327,6 +344,8 @@ namespace JX3SyncAssistant
                     if(files.ContainsKey("userdata"))
                     {
                         string userdataFolder = TargetGameFolder + $@"\userdata\{roleInfo["account"]}\{roleInfo["area"]}\{roleInfo["server"]}\{roleInfo["role"]}\";
+                        Directory.Delete(userdataFolder, true);
+                        Directory.CreateDirectory(userdataFolder);
                         foreach (string file in files["userdata"])
                         {
                             try
@@ -362,7 +381,6 @@ namespace JX3SyncAssistant
                             }
                         }
                     }
-                    
                     if (files.ContainsKey("my_config"))
                     {
                         foreach (string file in files["my_config"])
@@ -438,6 +456,7 @@ namespace JX3SyncAssistant
                             }
                         }
                     }
+                
                 }
                 catch(Exception e)
                 {

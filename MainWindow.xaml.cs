@@ -18,11 +18,12 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.6.0"; 
+        public const string VERSION = "0.7.0"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
         public string resultMD5 = "";
+        public Dictionary<string, bool> options;
 
         public MainWindow()
         {
@@ -424,6 +425,15 @@ namespace JX3SyncAssistant
 
         private void Go_Click(object sender, RoutedEventArgs e)
         {
+            options = new Dictionary<string, bool>{
+                { "userdata", (bool)UISettings.IsChecked },
+                { "userdata_async", !(bool)ServerSyncSettings.IsChecked },
+                { "jx_role_config", (bool)JXNoticeSettings.IsChecked },
+                { "my_role_config", (bool)MYRoleSettings.IsChecked },
+                { "jx_config", (bool)JXGlobalSettings.IsChecked },
+                { "my_config", (bool)MYGlobalSettings.IsChecked },
+                { "backup", (bool)BackupSettings.IsChecked }
+            };
             Go.IsEnabled = false;
             //get source zip file
             if (processLeft())
@@ -443,14 +453,7 @@ namespace JX3SyncAssistant
                 if (SourceAccounts.SelectedIndex != -1)
                 {
                     //get sync options
-                    Dictionary<string, bool> options = new Dictionary<string, bool>{
-                        { "userdata", (bool)UISettings.IsChecked },
-                        { "userdata_async", !(bool)ServerSyncSettings.IsChecked },
-                        { "jx_role_config", (bool)JXNoticeSettings.IsChecked },
-                        { "my_role_config", (bool)MYRoleSettings.IsChecked },
-                        { "jx_config", (bool)JXGlobalSettings.IsChecked },
-                        { "my_config", (bool)MYGlobalSettings.IsChecked }
-                    };
+                    
                     try
                     {
                         string SourceGameFolder = SourceFolder.Text;
@@ -567,6 +570,10 @@ namespace JX3SyncAssistant
                             { "server", (string)(TargetServers.SelectedItem as Label).Content },
                             { "role", (string)(TargetRoles.SelectedItem as Label).Content }
                         };
+                        if (options["backup"])
+                        {
+                            Helper.GetZipFromUserdata(TargetGameFolder, "backup.zip", roleInfo, options, LogPanel);
+                        }
                         Helper.UnpackToUserdata(TargetGameFolder, "userdata.zip", roleInfo, LogPanel);
                     }
                     catch (Exception E)
@@ -695,8 +702,9 @@ namespace JX3SyncAssistant
                 "0.4.0增加的内容主要是支持了通过文件进行导入导出方便去网吧游玩的玩家、添加了每个按钮上的Tooltip\n" +
                 "0.5.0增加的内容主要是新增了保存目录设置、更多的获取游戏目录方式、更新检查功能，同时修复了一些地方没法显示下划线的问题\n" +
                 "0.5.1修复了0.5.0自动更新检测存在的问题\n" +
-                "0.6.0修复了0.5.1在无网络环境下打开会崩溃的问题，添加了简单的云支持" +
-                "软件版本 0.6.0", "关于");
+                "0.6.0修复了0.5.1在无网络环境下打开会崩溃的问题，添加了简单的云支持\n" +
+                "0.7.0修复了0.6.0在存在某些旧文件的情况下无法同步键位的问题，添加了备份目标角色文件的功能。\n" +
+                "软件版本 0.7.0", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)

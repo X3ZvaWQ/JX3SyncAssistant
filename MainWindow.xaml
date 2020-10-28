@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="剑网三同步助手 - JX3SyncAssistant v0.6.0" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.7.0" Height="350" Width="710"
         ResizeMode="CanMinimize"
         Icon="20201013105745897_easyicon_net_128.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -339,6 +339,7 @@
                 <CheckBox Name="MYRoleSettings" Content="茗伊角色设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括茗伊便签（角色）、目标监控等,需要在登陆过目标角色的机器上才能转移该数据"/>
                 <CheckBox Name="JXGlobalSettings" Content="剑心全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,106,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="False" ToolTip="包括公用的剑心焦点列表、技能增强等剑心插件的本地公用数据，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
                 <CheckBox Name="MYGlobalSettings" Content="茗伊全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,131,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="False" ToolTip="包括公用的茗伊焦点列表、茗伊便签（公共）、头顶血条设置、目标监控等茗伊插件的本地公用设置(但是不包含团队监控[大文件]、角色统计[隐私]等)，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
+                <CheckBox x:Name="BackupSettings" Content="备份目标角色设置" HorizontalAlignment="Left" Height="25" Margin="9,173,0,0" VerticalAlignment="Top" Width="150" IsChecked="False" ToolTip="会把目标角色的相关设置备份到程序运行目录下的backup.zip"/>
             </Grid>
 
         </Grid>
