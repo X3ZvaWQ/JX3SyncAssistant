@@ -10,6 +10,7 @@ using System.ComponentModel;
 using JX3SyncAssistant.Properties;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Windows.Resources;
 
 namespace JX3SyncAssistant
 {
@@ -18,7 +19,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.7.0"; 
+        public const string VERSION = "0.7.1"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -425,9 +426,10 @@ namespace JX3SyncAssistant
 
         private void Go_Click(object sender, RoutedEventArgs e)
         {
-            options = new Dictionary<string, bool>{
+
+           options = new Dictionary<string, bool>{
                 { "userdata", (bool)UISettings.IsChecked },
-                { "userdata_async", !(bool)ServerSyncSettings.IsChecked },
+                { "userdata_async", (bool)ServerSyncSettings.IsChecked },
                 { "jx_role_config", (bool)JXNoticeSettings.IsChecked },
                 { "my_role_config", (bool)MYRoleSettings.IsChecked },
                 { "jx_config", (bool)JXGlobalSettings.IsChecked },
@@ -481,7 +483,7 @@ namespace JX3SyncAssistant
                             { "server", (string)(SourceServers.SelectedItem as Label).Content },
                             { "role", (string)(SourceRoles.SelectedItem as Label).Content }
                         };
-                        Helper.GetZipFromUserdata(SourceGameFolder, "userdata.zip", roleInfo, options, LogPanel);
+                        Helper.GetZipFromUserdata(SourceGameFolder, "__userdata.zip", roleInfo, options, LogPanel);
                     }
                     catch (Exception E)
                     {
@@ -574,7 +576,7 @@ namespace JX3SyncAssistant
                         {
                             Helper.GetZipFromUserdata(TargetGameFolder, "backup.zip", roleInfo, options, LogPanel);
                         }
-                        Helper.UnpackToUserdata(TargetGameFolder, "userdata.zip", roleInfo, LogPanel);
+                        Helper.UnpackToUserdata(TargetGameFolder, "__userdata.zip", roleInfo, LogPanel);
                     }
                     catch (Exception E)
                     {
@@ -605,7 +607,7 @@ namespace JX3SyncAssistant
                         {
                             File.Delete(TargetFilePath.Text);
                         }
-                        File.Move("userdata.zip", TargetFilePath.Text);
+                        File.Move("__userdata.zip", TargetFilePath.Text);
                         Helper.Log($"INFO: file \"userdata.zip\" has been moved to {TargetFilePath.Text}", LogPanel);
                         Settings.Default.DataSaveTo = TargetFilePath.Text;
                         Settings.Default.Save();
@@ -667,25 +669,37 @@ namespace JX3SyncAssistant
 
         private void SourceBrowse_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "XLauncher.exe|*.exe";
-            ofd.FileName = "XLauncher.exe";
-            if (ofd.ShowDialog() == true)
+            System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+            fbd.Description = "选择包含userdata文件夹与interface文件夹的目录即可。\n在你下一次使用时程序会自动选择旧的目录";
+            if(fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string folder = ofd.FileName;
-                SourceFolder.Text = Path.GetDirectoryName(folder) + (SourceSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
+                string folder = fbd.SelectedPath;
+                if (Directory.Exists($@"{folder}\interface") && Directory.Exists($@"{folder}\userdata"))
+                {
+                    SourceFolder.Text = folder;
+                }
+                else
+                {
+                    MessageBox.Show("没有在你选择的目录下面找到userdata和interface\n是不是找错位置了啦？", "表示疑惑的对话框");
+                }
             }
         }
 
         private void TargetBrowse_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "XLauncher.exe|*.exe";
-            ofd.FileName = "XLauncher.exe";
-            if (ofd.ShowDialog() == true)
+            System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+            fbd.Description = "选择包含userdata文件夹与interface文件夹的目录即可。\n在你下一次使用时程序会自动选择旧的目录";
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string folder = ofd.FileName;
-                TargetFolder.Text = Path.GetDirectoryName(folder) + (TargetSelect.SelectedIndex == 0 ? @"\Game\JX3\bin\zhcn_hd" : @"\Game\JX3_EXP\bin\zhcn_exp");
+                string folder = fbd.SelectedPath;
+                if (Directory.Exists($@"{folder}\interface") && Directory.Exists($@"{folder}\userdata"))
+                {
+                    TargetFolder.Text = folder;
+                }
+                else
+                {
+                    MessageBox.Show("没有在你选择的目录下面找到userdata和interface\n是不是找错位置了啦？", "表示疑惑的对话框");
+                }
             }
         }
 
@@ -704,7 +718,8 @@ namespace JX3SyncAssistant
                 "0.5.1修复了0.5.0自动更新检测存在的问题\n" +
                 "0.6.0修复了0.5.1在无网络环境下打开会崩溃的问题，添加了简单的云支持\n" +
                 "0.7.0修复了0.6.0在存在某些旧文件的情况下无法同步键位的问题，添加了备份目标角色文件的功能。\n" +
-                "软件版本 0.7.0", "关于");
+                "0.7.1不再从网络获取userpreferencesasync.jx3dat文件，并且添加直观的文件夹浏览而不是选择XLauncher.exe，修复了自动关闭服务器同步选项的一个逻辑问题\n" +
+                "软件版本 0.7.1", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)

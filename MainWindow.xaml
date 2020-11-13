@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="剑网三同步助手 - JX3SyncAssistant v0.7.0" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.7.1" Height="350" Width="710"
         ResizeMode="CanMinimize"
         Icon="20201013105745897_easyicon_net_128.ico"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -148,7 +148,7 @@
                 <Label Content="正式服角色"/>
                 <Label Content="测试服角色"/>
                 <Label Content="本地数据文件"/>
-                <Label Content="云端数据"/>
+                <!-- <Label Content="云端数据"/> -->
                 <!-- <Label Content="正式服账号下所有角色"/> -->
                 <!-- <Label Content="测试服账号下所有角色"/> -->
             </ComboBox>
@@ -156,7 +156,7 @@
                 <Label Content="正式服角色"/>
                 <Label Content="测试服角色"/>
                 <Label Content="本地数据文件"/>
-                <Label Content="云端数据"/>
+                <!-- <Label Content="云端数据 -->
                 <!-- <Label Content="正式服账号下所有角色"/> -->
                 <!-- <Label Content="测试服账号下所有角色"/> -->
             </ComboBox>
@@ -334,7 +334,7 @@
 
             <Grid Name="SettingGrid" Grid.Row="1" Grid.Column="1">
                 <CheckBox Name="UISettings" Content="键位与UI设置" HorizontalAlignment="Left" Height="25" Margin="10,6,0,0" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括userdata文件夹内的角色数据，包括但不限于界面设置，部分聊天记录，键位摆放，部分插件的开关等"/>
-                <CheckBox Name="ServerSyncSettings" Content="关闭服务器同步" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,31,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="true" ToolTip="注意：此功能通过下载一个服务器同步选项全关闭的配置文件实现，所以需要网络连接"/>
+                <CheckBox Name="ServerSyncSettings" Content="关闭服务器同步" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,31,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="true" ToolTip="通过一个所有服务器同步设置都关闭的文件实现，该文件现在嵌入在程序内不再需要联网下载"/>
                 <CheckBox Name="JXNoticeSettings" Content="剑心喊话设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,56,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括技能喊话、过图喊话、击杀喊话等,需要在登陆过目标角色的机器上才能转移该数据"/>
                 <CheckBox Name="MYRoleSettings" Content="茗伊角色设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="True" ToolTip="包括茗伊便签（角色）、目标监控等,需要在登陆过目标角色的机器上才能转移该数据"/>
                 <CheckBox Name="JXGlobalSettings" Content="剑心全局设置" Grid.Column="2" HorizontalAlignment="Left" Height="25" Margin="10,106,0,0" Grid.Row="1" VerticalAlignment="Top" Width="150" IsChecked="False" ToolTip="包括公用的剑心焦点列表、技能增强等剑心插件的本地公用数据，适用于在不同的电脑环境之间或者正式服与测试服之间迁移时使用"/>
@@ -349,8 +349,8 @@
                 <Label Name="UploadProgressLabel" Content="0.00K/0.00K" Margin="125,1,463,-1" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
                 <ProgressBar Name="DownloadProgressBar" Width="120" Height="6" HorizontalAlignment="Left" VerticalAlignment="Center" Value="0" Maximum="100" Margin="435,0,0,0" Visibility="Hidden"/>
                 <Label Name="DownloadProgressLabel" Content="0M / 3.1M" Margin="350,0,240,0" Padding="2,7,0,0" FontSize="12" Visibility="Hidden"/>
-                <Button Name="AboutButton" HorizontalAlignment="Right" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="Auto" Click="AboutButton_Click" 
-                        ToolTip="显示关于信息">
+                <Button Name="AboutButton" HorizontalAlignment="Right" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="30" Click="AboutButton_Click" 
+                        ToolTip="显示关于信息" VerticalAlignment="Top">
                     <materialDesign:PackIcon Kind="InfoOutline" Foreground="White"/>
                 </Button>
                 <Button Name="LogButton" HorizontalAlignment="Right" Margin="0,0,40,0" Width="30" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" Height="Auto" Click="LogButton_Click" 

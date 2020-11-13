@@ -14,6 +14,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Resources;
 
 namespace JX3SyncAssistant
 {
@@ -95,6 +96,7 @@ namespace JX3SyncAssistant
                                 string file_name = @"\userdata\" + file;
                                 zipArchive.CreateEntryFromFile(userdataFolder + file, file_name);
                                 files.Add(file_name);
+
                             }
                             catch (Exception E)
                             {
@@ -107,13 +109,18 @@ namespace JX3SyncAssistant
                         {
                             try
                             {
-                                WebClient wc = new WebClient();
-                                wc.DownloadFile("http://47.101.177.238/userpreferencesasync.jx3dat", "userpreferencesasync.jx3dat");
-                                wc.Dispose();
+                                string file_name = @"\userdata\userpreferencesasync.jx3dat";
+                                Uri uri = new Uri(@"pack://application:,,,/JX3SyncAssistant;component/Resources/userpreferencesasync.jx3dat", UriKind.Absolute);
+                                using (FileStream fs_sync = new FileStream("userpreferencesasync.jx3dat", FileMode.Create))
+                                {
+                                    StreamResourceInfo resource = Application.GetResourceStream(uri);
+                                    resource.Stream.CopyTo(fs_sync);
+                                }
+                                files.Add(file_name);
                             }
                             catch (Exception E)
                             {
-                                Log("Download \"userpreferencesasync.jx3dat\" Error！", logPanel);
+                                Log("Excract \"userpreferencesasync.jx3dat\" Error！", logPanel);
                                 Log(E.Message, logPanel);
                                 Log(E.StackTrace, logPanel);
                             }
@@ -344,8 +351,13 @@ namespace JX3SyncAssistant
                     if(files.ContainsKey("userdata"))
                     {
                         string userdataFolder = TargetGameFolder + $@"\userdata\{roleInfo["account"]}\{roleInfo["area"]}\{roleInfo["server"]}\{roleInfo["role"]}\";
-                        Directory.Delete(userdataFolder, true);
-                        Directory.CreateDirectory(userdataFolder);
+                        foreach (string f in Directory.GetFileSystemEntries(userdataFolder))
+                        {
+                            if (File.Exists(f))
+                            {
+                                File.Delete(f);
+                            }
+                        }
                         foreach (string file in files["userdata"])
                         {
                             try

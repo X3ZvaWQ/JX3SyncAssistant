@@ -73,7 +73,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>JX3SyncAssistant.pfx.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
@@ -151,15 +152,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="JX3SyncAssistant.pfx" />
-    <None Include="JX3SyncAssistant.pfx.snk" />
-    <None Include="JX3SyncAssistant_TemporaryKey.pfx" />
-    <None Include="key.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\userpreferencesasync.jx3dat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
