@@ -70,6 +70,7 @@ namespace JX3SyncAssistant
                 using (FileStream fs = new FileStream(zip, FileMode.Create))
                 using (ZipArchive zipArchive = new ZipArchive(fs, ZipArchiveMode.Create))
                 {
+                    //userdata 
                     if(contain_options["userdata"])
                     {
                         ArrayList files = new ArrayList();
@@ -201,20 +202,20 @@ namespace JX3SyncAssistant
                         string[] file_list =
                         {
 
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\anmerkungen.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\focus.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\infotip.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\memo.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\my_targetmon.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\storageversion.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\config\tutorialed.jx3dat",
-                            $@"\interface\MY#DATA\{roleId}@zhcn\manifest.jx3dat"
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\anmerkungen.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\focus.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\infotip.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\memo.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\my_targetmon.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\storageversion.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\tutorialed.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\manifest.jx3dat"
                         };
                         foreach (string file in file_list)
                         {
                             try
                             {
-                                string file_name = file.Replace($"{roleId}@zhcn", "role");
+                                string file_name = file.Replace($"{roleId}@zhcn_hd", "role");
                                 zipArchive.CreateEntryFromFile(SourceData + file, file_name);
                                 files.Add(file_name);
                             }
@@ -260,26 +261,26 @@ namespace JX3SyncAssistant
                         ArrayList files = new ArrayList();
                         string[] file_list =
                         {
-                            @"\interface\MY#DATA\!all-users@zhcn\config\yy.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\show_notify.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\serendipity_autoshare.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\screenshot.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\my_targetmon.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\memo.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\fontconfig.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\chatmonitor.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\chatblockwords.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\cataclysm\common.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\focus\common.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\config\xlifebar\common.jx3dat",
-                            @"\interface\MY#DATA\!all-users@zhcn\manifest.jx3dat"
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\yy.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\show_notify.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\serendipity_autoshare.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\screenshot.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\my_targetmon.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\memo.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\fontconfig.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\chatmonitor.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\chatblockwords.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\cataclysm\common.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\focus\common.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\xlifebar\common.jx3dat",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\manifest.jx3dat"
                         };
-                        if(Directory.Exists(SourceData + @"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon"))
+                        if(Directory.Exists(SourceData + @"\interface\MY#DATA\!all-users@zhcn_hd\userdata\TargetMon"))
                         {
-                            string[] TargetMonFiles = Directory.GetFiles(SourceData + @"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon");
+                            string[] TargetMonFiles = Directory.GetFiles(SourceData + @"\interface\MY#DATA\!all-users@zhcn_hd\userdata\TargetMon");
                             foreach (string TargetMonFile in TargetMonFiles)
                             {
-                                string file_name = $@"\interface\MY#DATA\!all-users@zhcn\userdata\TargetMon\{Path.GetFileName(TargetMonFile)}";
+                                string file_name = $@"\interface\MY#DATA\!all-users@zhcn_hd\userdata\TargetMon\{Path.GetFileName(TargetMonFile)}";
                                 try
                                 {
                                     zipArchive.CreateEntryFromFile(SourceData + file_name, file_name);
@@ -454,7 +455,7 @@ namespace JX3SyncAssistant
                         {
                             try
                             {
-                                string file_name = file.Replace("role", $"{roleId}@zhcn");
+                                string file_name = file.Replace("role", $"{roleId}@zhcn_hd");
                                 ZipArchiveEntry zipArchiveEntry = zipArchive.GetEntry(file);
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file_name);
                                 Directory.CreateDirectory(targetExtractFolder);

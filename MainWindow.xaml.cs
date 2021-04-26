@@ -19,7 +19,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.7.1"; 
+        public const string VERSION = "0.7.2"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -719,7 +719,8 @@ namespace JX3SyncAssistant
                 "0.6.0修复了0.5.1在无网络环境下打开会崩溃的问题，添加了简单的云支持\n" +
                 "0.7.0修复了0.6.0在存在某些旧文件的情况下无法同步键位的问题，添加了备份目标角色文件的功能。\n" +
                 "0.7.1不再从网络获取userpreferencesasync.jx3dat文件，并且添加直观的文件夹浏览而不是选择XLauncher.exe，修复了自动关闭服务器同步选项的一个逻辑问题\n" +
-                "软件版本 0.7.1", "关于");
+                "0.7.2修复了茗伊插件最近更新 茗伊插件配置文件路径变化 导致无法同步茗伊配置的问题\n" +
+                "软件版本 0.7.2", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)
