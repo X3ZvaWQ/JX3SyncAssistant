@@ -59,6 +59,28 @@ namespace JX3SyncAssistant
             return results;
         }
 
+        public static string GetGlobalIdByIdAndServer(string id, string server, string SourceData) {
+            string interFaceFolder = SourceData + @"\interface\";
+            string[] roleInterFaceFolderSearchResult = Directory.GetDirectories(interFaceFolder + @"\MY#DATA", id, SearchOption.AllDirectories);
+            if (roleInterFaceFolderSearchResult.Length > 0)
+            {
+                foreach (string roleInterFaceFolder in roleInterFaceFolderSearchResult) {
+                    DirectoryInfo ParentDirectory = Directory.GetParent(roleInterFaceFolderSearchResult[0]);
+                    string userInfo = File.ReadAllText(ParentDirectory.FullName + @"\info.jx3dat", Encoding.Default);
+                    if (userInfo.Contains($"relserver=\"{server}\""))
+                    {
+                        string roleId = ParentDirectory.Name.Split('@')[0];
+                        return roleId;
+                    }
+                }
+                return null;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options, TextBox logPanel)
         {
             Profile profile = new Profile {
@@ -70,7 +92,7 @@ namespace JX3SyncAssistant
                 using (FileStream fs = new FileStream(zip, FileMode.Create))
                 using (ZipArchive zipArchive = new ZipArchive(fs, ZipArchiveMode.Create))
                 {
-                    //userdata 
+                    //userdata设置迁移，最基本的数据文件
                     if(contain_options["userdata"])
                     {
                         ArrayList files = new ArrayList();
@@ -155,29 +177,24 @@ namespace JX3SyncAssistant
                         }
                         allFiles.Add("userdata", (string[])files.ToArray(typeof(string)));
                     }
-                   
-                    bool RoleIdEnable = false;
-                    string roleId = "";
-                    string interFaceFolder = SourceData + @"\interface\";
-                    string[] roleInterFaceFolderSearchResult = Directory.GetDirectories(interFaceFolder + @"\MY#DATA", roleInfo["role"], SearchOption.AllDirectories);
-                    if (roleInterFaceFolderSearchResult.Length > 0)
-                    {
-                        RoleIdEnable = true;
-                        roleId = Directory.GetParent(roleInterFaceFolderSearchResult[0]).Name.Split('@')[0];
-                    }
-                    else
+                    //看能不能找到需要迁移角色的globalId，因为剑心 茗伊这些插件储存的时候都是用globalId存储的
+                    //只通过文件的话只能找到茗伊插件数据里面对应id的文件夹来获取globalId
+                    //如果找不到的话就没办法进性插件相关的设置2迁移了
+                    string roleId = GetGlobalIdByIdAndServer(roleInfo["role"], roleInfo["server"], SourceData);
+                    
+                    if (roleId == null)
                     {
                         Console.WriteLine("Cannot find out role id in MY#DATA, All role plugin setting will be skip.");
                     }
-                    
-                    if (contain_options["jx_role_config"] && RoleIdEnable)
+                    //剑心插件集的一些角色设置，喊话，技能释放什么的
+                    if (contain_options["jx_role_config"] && roleId!=null)
                     {
                         ArrayList files = new ArrayList();
                         string[] file_list =
                         {
-                            $@"\interface\JX#DATA\killnotice\{roleId}.jx3dat",
-                            $@"\interface\JX#DATA\othernotice\{roleId}.jx3dat",
-                            $@"\interface\JX#DATA\skillnotice\{roleId}.jx3dat"
+                            $@"\interface\JX#DATA\killnotice\{roleId}.jx3dat",   //技能喊话
+                            $@"\interface\JX#DATA\othernotice\{roleId}.jx3dat",  //入组 入帮之类的喊话
+                            $@"\interface\JX#DATA\skillnotice\{roleId}.jx3dat"  //击杀提示
                         };
                         foreach (string file in file_list)
                         {
@@ -195,8 +212,8 @@ namespace JX3SyncAssistant
                         }
                         allFiles.Add("jx_role_config", (string[])files.ToArray(typeof(string)));
                     }
-
-                    if (contain_options["my_role_config"] && RoleIdEnable)
+                    //茗伊插件集的角色设置
+                    if (contain_options["my_role_config"] && roleId!=null)
                     {
                         ArrayList files = new ArrayList();
                         string[] file_list =
@@ -207,6 +224,7 @@ namespace JX3SyncAssistant
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\infotip.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\memo.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\my_targetmon.jx3dat",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\settings.db",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\storageversion.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\tutorialed.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\manifest.jx3dat"
@@ -215,7 +233,7 @@ namespace JX3SyncAssistant
                         {
                             try
                             {
-                                string file_name = file.Replace($"{roleId}@zhcn_hd", "role");
+                                string file_name = file.Replace($"{roleId}@zhcn_hd", "roleId");
                                 zipArchive.CreateEntryFromFile(SourceData + file, file_name);
                                 files.Add(file_name);
                             }
@@ -228,7 +246,7 @@ namespace JX3SyncAssistant
                         allFiles.Add("my_role_config", (string[])files.ToArray(typeof(string)));
 
                     }
-                
+                    //剑心插件集的全局设置
                     if (contain_options["jx_config"])
                     {
                         ArrayList files = new ArrayList();
@@ -254,13 +272,14 @@ namespace JX3SyncAssistant
                             }
                         }
                         allFiles.Add("jx_config", (string[])files.ToArray(typeof(string)));
-                    }
-
+                    } 
+                    //茗伊插件集的全局设置
                     if (contain_options["my_config"])
                     {
                         ArrayList files = new ArrayList();
                         string[] file_list =
                         {
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\settings.db",
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\yy.jx3dat",
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\show_notify.jx3dat",
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\serendipity_autoshare.jx3dat",
@@ -346,9 +365,10 @@ namespace JX3SyncAssistant
                     Profile profile = JsonSerializer.Deserialize<Profile>(File.ReadAllText("profile.json"));
                     File.Delete("profile.json");
                     if(profile.version != MainWindow.VERSION) {
-                        Helper.Log("WARN: The description document version of the data is inconsistent with the program version. This may cause data migration errors.", logPanel);
+                        Log("WARN: The description document version of the data is inconsistent with the program version. This may cause data migration errors.", logPanel);
                     }
                     Dictionary<string, string[]> files = profile.files;
+                    //释放userdata的文件
                     if(files.ContainsKey("userdata"))
                     {
                         string userdataFolder = TargetGameFolder + $@"\userdata\{roleInfo["account"]}\{roleInfo["area"]}\{roleInfo["server"]}\{roleInfo["role"]}\";
@@ -374,6 +394,7 @@ namespace JX3SyncAssistant
                             }
                         }
                     }
+                    //释放剑心插件集的全局文件
                     if(files.ContainsKey("jx_config"))
                     {
                         foreach (string file in files["jx_config"])
@@ -394,6 +415,7 @@ namespace JX3SyncAssistant
                             }
                         }
                     }
+                    //释放茗伊插件集的全局文件
                     if (files.ContainsKey("my_config"))
                     {
                         foreach (string file in files["my_config"])
@@ -414,20 +436,13 @@ namespace JX3SyncAssistant
                         }
                     }
 
-                    bool RoleIdEnable = false;
-                    string roleId = "";
-                    string interFaceFolder = TargetGameFolder + @"\interface\";
-                    string[] roleInterFaceFolderSearchResult = Directory.GetDirectories(interFaceFolder + @"\MY#DATA", roleInfo["role"], SearchOption.AllDirectories);
-                    if (roleInterFaceFolderSearchResult.Length > 0)
+                    string roleId = GetGlobalIdByIdAndServer(roleInfo["role"], roleInfo["server"], TargetGameFolder);
+                    if (roleId == null)
                     {
-                        RoleIdEnable = true;
-                        roleId = Directory.GetParent(roleInterFaceFolderSearchResult[0]).Name.Split('@')[0];
+                        Console.WriteLine("Cannot find out role id in MY#DATA, All role plugin setting will be skip.");
                     }
-                    else
-                    {
-                        Helper.Log("WARN: Cannot find out role id in MY#DATA, All role plugin setting will be skip.", logPanel);
-                    }
-                    if (files.ContainsKey("jx_role_config") && RoleIdEnable)
+
+                    if (files.ContainsKey("jx_role_config") && roleId!=null)
                     {
                         foreach (string file in files["jx_role_config"])
                         {
@@ -449,13 +464,13 @@ namespace JX3SyncAssistant
                         }
                     }
 
-                    if (files.ContainsKey("my_role_config") && RoleIdEnable)
+                    if (files.ContainsKey("my_role_config") && roleId!=null)
                     {
                         foreach (string file in files["my_role_config"])
                         {
                             try
                             {
-                                string file_name = file.Replace("role", $"{roleId}@zhcn_hd");
+                                string file_name = file.Replace("roleId", $"{roleId}@zhcn_hd");
                                 ZipArchiveEntry zipArchiveEntry = zipArchive.GetEntry(file);
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file_name);
                                 Directory.CreateDirectory(targetExtractFolder);
