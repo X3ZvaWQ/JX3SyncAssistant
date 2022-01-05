@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="剑网三同步助手 - JX3SyncAssistant v0.7.3" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.8.0" Height="350" Width="710"
         ResizeMode="CanMinimize"
         Icon="Snipaste_2021-04-26_18-07-50.png"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -46,7 +46,7 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="16"/>
+            <Setter Property="Height" Value="12"/>
             <Setter Property="Padding" Value="5,0,0,1"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Template">
@@ -145,17 +145,19 @@
                 <RowDefinition Height="80*"/>
             </Grid.RowDefinitions>
             <ComboBox Name="SourceSelect"  HorizontalAlignment="Left" Height="32" Margin="75,10,0,0" VerticalAlignment="Top" Width="160" Grid.Column="0" Grid.Row="0" SelectionChanged="SourceSelect_SelectionChanged">
-                <Label Content="正式服角色"/>
-                <Label Content="测试服角色"/>
-                <Label Content="本地数据文件"/>
+                <Label Content="正式服角色" ToolTip="从正式服现有角色的设置数据中转移"/>
+                <Label Content="测试服角色" ToolTip="从测试服现有角色的设置数据中转移"/>
+                <Label Content="预设数据"  ToolTip="从本软件目录中的角色数据文件中转移（右键选项可以删除预设）"/>
+                <Label Content="本地数据文件" ToolTip="从本机器任意一个zip角色数据文件中转移"/>
                 <!-- <Label Content="云端数据"/> -->
                 <!-- <Label Content="正式服账号下所有角色"/> -->
                 <!-- <Label Content="测试服账号下所有角色"/> -->
             </ComboBox>
             <ComboBox Name="TargetSelect" HorizontalAlignment="Left" Height="32" Margin="75,10,0,0" VerticalAlignment="Top" Width="160" Grid.Column="2" Grid.Row="0" SelectionChanged="TargetSelect_SelectionChanged">
-                <Label Content="正式服角色"/>
-                <Label Content="测试服角色"/>
-                <Label Content="本地数据文件"/>
+                <Label Content="正式服角色" ToolTip="转移到正式服登陆过的角色"/>
+                <Label Content="测试服角色" ToolTip="转移到测试服登陆过的角色"/>
+                <Label Content="预设数据" ToolTip="转移到本软件目录下的预设数据目录"/>
+                <Label Content="本地数据文件" ToolTip="转移到本机任意一个zip角色数据文件"/>
                 <!-- <Label Content="云端数据 -->
                 <!-- <Label Content="正式服账号下所有角色"/> -->
                 <!-- <Label Content="测试服账号下所有角色"/> -->
@@ -169,7 +171,7 @@
 
             <!-- Role select grid -->
             <!-- left -->
-            <Grid Name="SourceRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Visible" Grid.Row="1">
+            <Grid Name="SourceRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="34*"/>
@@ -223,7 +225,7 @@
 
             </Grid>
             <!-- right -->
-            <Grid Name="TargetRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Visible" Grid.Row="1">
+            <Grid Name="TargetRoleGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Hidden" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="10*"/>
                     <RowDefinition Height="34*"/>
@@ -275,7 +277,6 @@
 
             </Grid>
 
-
             <!-- file browser -->
             <!-- left -->
             <Grid Name="SourceFileGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
@@ -306,6 +307,35 @@
                              ToolTip="选择目标来源文件路径" Click="TargetFileBrowse_Click"/>
             </Grid>
 
+            <!-- preset -->
+            <!-- left -->
+            <Grid Name="SourcePresetGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Visible" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="44*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                <ListBox Name="SourcePresetList" Margin="15,0,0,0" Grid.ColumnSpan="2" ScrollViewer.VerticalScrollBarVisibility = "Disabled" SelectionChanged="SourcePresetList_SelectionChanged">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="删除预设" Click="SourcePresetDelete_Click"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+                <TextBox Name="SourcePresetSearch" Grid.Row="1" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  Width="245"  VerticalAlignment="Top" ToolTip="搜索预设" TextChanged="SourcePresetSearch_TextChanged"/>
+            </Grid>
+            <!-- right -->
+            <Grid Name="TargetPresetGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="2" Visibility="Visible" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="44*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                <Grid Name="TargetPresetSelect" Grid.Row="0" Visibility="Visible">
+                    <ListBox Margin="15,0,0,0" Name="TargetPresetList" ScrollViewer.VerticalScrollBarVisibility = "Disabled" MouseUp="TargetPresetList_SelectionChanged">
+                    </ListBox>
+                </Grid>
+                <TextBox Name="TargetPresetName" Grid.Row="1" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  Width="245"  VerticalAlignment="Top" ToolTip="新预设名，重复的预设名会覆盖" TextChanged="TargetPresetName_TextChanged"/>
+            </Grid>
+            
             <!-- url -->
             <!-- left -->
             <Grid Name="SourceUrlGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
@@ -363,6 +393,6 @@
                 </Button>
             </Grid>
         </materialDesign:Card>
-        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Consolas" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Text="虽然这里目前空荡荡的像是花蛤的头顶，但是这里确实就是日志区了"/>
+        <TextBox Name="LogPanel" HorizontalAlignment="Left" Height="235" Margin="-1,310,0,-266" TextWrapping="NoWrap" VerticalAlignment="Top" FontFamily="Microsoft YaHei" IsReadOnly="True" FontSize="13" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Width="695" Text="虽然这里目前空荡荡的像是花蛤的头顶，但是这里确实就是日志区了"/>
     </Grid>
 </Window>

@@ -65,9 +65,9 @@ namespace JX3SyncAssistant
             if (roleInterFaceFolderSearchResult.Length > 0)
             {
                 foreach (string roleInterFaceFolder in roleInterFaceFolderSearchResult) {
-                    DirectoryInfo ParentDirectory = Directory.GetParent(roleInterFaceFolderSearchResult[0]);
+                    DirectoryInfo ParentDirectory = Directory.GetParent(roleInterFaceFolder);
                     string userInfo = File.ReadAllText(ParentDirectory.FullName + @"\info.jx3dat", Encoding.Default);
-                    if (userInfo.Contains($"relserver=\"{server}\""))
+                    if (userInfo.Contains($"relserver=\"{server}\"") || userInfo.Contains($"server=\"{server}\""))
                     {
                         string roleId = ParentDirectory.Name.Split('@')[0];
                         return roleId;
@@ -79,6 +79,35 @@ namespace JX3SyncAssistant
             {
                 return null;
             }
+        }
+
+        public static string[] GetAllPreset() {
+            string presetDirectory = AppDomain.CurrentDomain.BaseDirectory + @"\preset";
+            List<string> presetFiles = new List<string>();
+            if (Directory.Exists(presetDirectory))
+            {
+                string[] _presetFiles = Directory.GetFiles(presetDirectory);
+                for (int i = 0; i < _presetFiles.Length; i++) {
+                    try
+                    {
+                        string presetFile = _presetFiles[i];
+                        presetFile = Path.GetFileName(presetFile).Replace(".zip", "");
+                        presetFile = presetFile.Replace("_", "/");
+                        presetFile = Encoding.UTF8.GetString(Convert.FromBase64String(presetFile));
+                        presetFiles.Add(presetFile);
+                        
+                    }
+                    catch (Exception E) {
+                        Console.WriteLine($@"Error: illegal filename at {_presetFiles[i]}");
+                        Console.WriteLine(E.StackTrace);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(presetDirectory);
+            }
+            return presetFiles.ToArray();
         }
 
         public static void GetZipFromUserdata(string SourceData, string zip, Dictionary<string, string> roleInfo, Dictionary<string, bool> contain_options, TextBox logPanel)

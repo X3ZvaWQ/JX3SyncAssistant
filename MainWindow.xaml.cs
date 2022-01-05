@@ -5,12 +5,9 @@ using System.Windows.Controls;
 using System.IO;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using JX3SyncAssistant.Properties;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Windows.Resources;
 
 namespace JX3SyncAssistant
 {
@@ -19,7 +16,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.7.3"; 
+        public const string VERSION = "0.8.0"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -64,6 +61,7 @@ namespace JX3SyncAssistant
             SourceRoleGrid.Visibility = Visibility.Hidden;
             SourceFileGrid.Visibility = Visibility.Hidden;
             SourceUrlGrid.Visibility = Visibility.Hidden;
+            SourcePresetGrid.Visibility = Visibility.Hidden;
 
             if (SourceSelect.SelectedIndex == 0 || SourceSelect.SelectedIndex == 1)
             {
@@ -100,6 +98,22 @@ namespace JX3SyncAssistant
             }
             else if(SourceSelect.SelectedIndex == 2)
             {
+                SourcePresetGrid.Visibility = Visibility.Visible;
+                string[] presets = Helper.GetAllPreset();
+                SourcePresetList.Items.Clear();
+                foreach (string preset in presets) {
+                    Label label = new Label
+                    {
+                        Content = preset,
+                        Height = 14,
+                        FontSize = 12,
+                        Padding = new Thickness(5, 0, 0, 0)
+                    };
+                    SourcePresetList.Items.Add(label);
+                }
+            }
+            else if (SourceSelect.SelectedIndex == 3)
+            {
                 if (Settings.Default.DataLoadFrom != null && Settings.Default.DataLoadFrom != "")
                 {
                     SourceFilePath.Text = Settings.Default.DataLoadFrom;
@@ -109,10 +123,6 @@ namespace JX3SyncAssistant
                     SourceFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
                 }
                 SourceFileGrid.Visibility = Visibility.Visible;
-            }
-            else if (SourceSelect.SelectedIndex == 3)
-            {
-                SourceUrlGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -140,7 +150,7 @@ namespace JX3SyncAssistant
                         Label label = new Label
                         {
                             Content = role,
-                            Height = 14,
+                            Height = 12,
                             FontSize = 11,
                             Padding = new Thickness(5, 0, 0, 0)
                         };
@@ -252,6 +262,7 @@ namespace JX3SyncAssistant
             TargetRoleGrid.Visibility = Visibility.Hidden;
             TargetFileGrid.Visibility = Visibility.Hidden;
             TargetUrlGrid.Visibility = Visibility.Hidden;
+            TargetPresetGrid.Visibility = Visibility.Hidden;
 
             if (TargetSelect.SelectedIndex == 0 || TargetSelect.SelectedIndex == 1)
             {
@@ -279,6 +290,23 @@ namespace JX3SyncAssistant
             }
             else if (TargetSelect.SelectedIndex == 2)
             {
+                TargetPresetGrid.Visibility = Visibility.Visible;
+                string[] presets = Helper.GetAllPreset();
+                TargetPresetList.Items.Clear();
+                foreach (string preset in presets)
+                {
+                    Label label = new Label
+                    {
+                        Content = preset,
+                        Height = 14,
+                        FontSize = 13,
+                        Padding = new Thickness(5, 0, 0, 0)
+                    };
+                    TargetPresetList.Items.Add(label);
+                }
+            }
+            else if (TargetSelect.SelectedIndex == 3)
+            {
                 if (Settings.Default.DataSaveTo != null && Settings.Default.DataSaveTo != "")
                 {
                     TargetFilePath.Text = Settings.Default.DataSaveTo;
@@ -288,10 +316,6 @@ namespace JX3SyncAssistant
                     TargetFilePath.Text = AppDomain.CurrentDomain.BaseDirectory + "userdata.zip";
                 }
                 TargetFileGrid.Visibility = Visibility.Visible;
-            }
-            else if (TargetSelect.SelectedIndex == 3)
-            {
-                TargetUrlGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -320,7 +344,7 @@ namespace JX3SyncAssistant
                         Label label = new Label
                         {
                             Content = role,
-                            Height = 14,
+                            Height = 12,
                             FontSize = 11,
                             Padding = new Thickness(5, 0, 0, 0)
                         };
@@ -445,6 +469,13 @@ namespace JX3SyncAssistant
                 {
                     processEnd();
                 }
+                else
+                {
+                    Go.IsEnabled = true;
+                }
+            }
+            else {
+                Go.IsEnabled = true;
             }
         }
 
@@ -500,11 +531,35 @@ namespace JX3SyncAssistant
             }
             else if (SourceSelect.SelectedIndex == 2)
             {
+                Label label = (Label)SourcePresetList.SelectedItem;
+                if (label != null)
+                {
+                    string presetName = label.Content.ToString();
+                    string filename = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(presetName)).Replace("/", "_");
+                    if (File.Exists($@".\preset\{filename}.zip"))
+                    {
+                        File.Copy($@".\preset\{filename}.zip", AppDomain.CurrentDomain.BaseDirectory + "\\__userdata.zip", true);
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("雾草，我那么大一个预设文件呢？", "满头大汉");
+                        return false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("你选了个寂寞？", "表示疑惑地对话框");
+                    return false;
+                }
+            }
+            else if (SourceSelect.SelectedIndex == 3)
+            {
                 if (SourceFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
                 {
                     if (File.Exists(SourceFilePath.Text))
                     {
-                        File.Copy(SourceFilePath.Text, AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip", true);
+                        File.Copy(SourceFilePath.Text, AppDomain.CurrentDomain.BaseDirectory + "\\__userdata.zip", true);
                         Settings.Default.DataLoadFrom = SourceFilePath.Text;
                         Settings.Default.Save();
                     }
@@ -514,26 +569,6 @@ namespace JX3SyncAssistant
                         Go.IsEnabled = true;
                         return false;
                     }
-                }
-            }
-            else if (SourceSelect.SelectedIndex == 3)
-            {
-                try
-                {
-                    string md5 = SourceFileMD5.Text;
-                    WebClient wc = new WebClient();
-                    UploadProgressBar.Visibility = Visibility.Visible;
-                    UploadProgressLabel.Visibility = Visibility.Visible;
-                    wc.DownloadProgressChanged += UploadProgressChanged;
-                    wc.DownloadFileCompleted += DownloadUserdataCompleted;
-                    wc.DownloadFileAsync(new Uri($"http://47.101.177.238/userdata/{md5}.zip"), "userdata.zip");
-                    return false;
-                }
-                catch (Exception E)
-                {
-                    MessageBox.Show("尝试从服务器获取文件的过程中出现错误，请检查网络连接以及数据代码是否正确", "网络错误");
-                    Helper.Log(E.Message, LogPanel);
-                    Helper.Log(E.StackTrace, LogPanel);
                 }
             }
             return true;
@@ -594,7 +629,47 @@ namespace JX3SyncAssistant
             }
             else if (TargetSelect.SelectedIndex == 2)
             {
-
+                string presetName = TargetPresetName.Text;
+                if (presetName == "") {
+                    MessageBox.Show("给你的预设起个名字吧\n没错就是下面那个输入框输入", "表示错误的对话框");
+                    return false;
+                }
+                string filename = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(presetName)).Replace("/", "_");
+                if (File.Exists($@".\preset\{filename}.zip"))
+                {
+                    MessageBoxResult mbr = MessageBox.Show($@"预设{presetName}已存在，是否覆盖该预设？该操作不可逆！", "要小心操作哦", MessageBoxButton.YesNo);
+                    if (mbr == MessageBoxResult.Yes)
+                    {
+                        File.Delete($@".\preset\{filename}.zip");
+                        File.Move(AppDomain.CurrentDomain.BaseDirectory + "\\__userdata.zip", $@".\preset\{filename}.zip");
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else {
+                    File.Move(AppDomain.CurrentDomain.BaseDirectory + "\\__userdata.zip", $@".\preset\{filename}.zip");
+                    Label label = new Label
+                    {
+                        Content = presetName,
+                        Height = 14,
+                        FontSize = 12,
+                        Padding = new Thickness(5, 0, 0, 0)
+                    };
+                    TargetPresetList.Items.Add(label);
+                    label = new Label
+                    {
+                        Content = presetName,
+                        Height = 14,
+                        FontSize = 12,
+                        Padding = new Thickness(5, 0, 0, 0)
+                    };
+                    SourcePresetList.Items.Add(label);
+                }
+            }
+            else if (TargetSelect.SelectedIndex == 3)
+            {
                 if (TargetFilePath.Text != AppDomain.CurrentDomain.BaseDirectory + "\\userdata.zip")
                 {
                     try
@@ -620,45 +695,14 @@ namespace JX3SyncAssistant
                     }
                 }
             }
-            else if (TargetSelect.SelectedIndex == 3)
-            {
-                try
-                {
-                    MD5 md5 = MD5.Create();
-                    byte[] file = File.ReadAllBytes("userdata.zip");
-                    file = md5.ComputeHash(file);
-                    resultMD5 = "";
-                    foreach (byte b in file)
-                        resultMD5 += b.ToString("x");
-                    Helper.Log($"INFO: userdata's MD5 value is \"{resultMD5}\", start upload", LogPanel);
-
-                    WebClient wc = new WebClient();
-                    UploadProgressBar.Visibility = Visibility.Visible;
-                    UploadProgressLabel.Visibility = Visibility.Visible;
-                    wc.UploadProgressChanged += UploadProgressChanged;
-                    wc.UploadFileCompleted += UploadUserdataCompleted;
-                    wc.UploadFileAsync(new Uri($"http://47.101.177.238/userdata/{resultMD5}.zip"), "PUT", "userdata.zip");
-                    return false;
-                }
-                catch (Exception E)
-                {
-                    MessageBox.Show("尝试上传文件到服务器错误，请打开日志区提交错误报告（x", "网络错误");
-                    Helper.Log(E.Message, LogPanel);
-                    Helper.Log(E.StackTrace, LogPanel);
-                }
-            }
             return true;
         }
 
         private void processEnd()
         {
-            if (SourceSelect.SelectedIndex == 2 && TargetSelect.SelectedIndex == 2)
+            if (SourceSelect.SelectedIndex == 3 && TargetSelect.SelectedIndex == 3)
             {
                 MessageBox.Show("我已经听话地把这个文件已经从左边移到右边了\n\n但是您为什么不自己Ctrl+C Ctrl+V呢  w(ﾟДﾟ)w", "表示疑惑的提示框");
-            }
-            else if (SourceSelect.SelectedIndex == 3 && TargetSelect.SelectedIndex == 3)
-            {
-                MessageBox.Show("别皮了，后台储存数据是根据文件的摘要储存的，就算你这么操作了也不会发生任何事情 w(ﾟДﾟ)w", "表示疑惑的提示框");
             }
             else
             {
@@ -721,7 +765,8 @@ namespace JX3SyncAssistant
                 "0.7.1不再从网络获取userpreferencesasync.jx3dat文件，并且添加直观的文件夹浏览而不是选择XLauncher.exe，修复了自动关闭服务器同步选项的一个逻辑问题\n" +
                 "0.7.2修复了茗伊插件最近更新 茗伊插件配置文件路径变化 导致无法同步茗伊配置的问题\n" +
                 "0.7.3修复了茗伊插件最近更新 插件配置文件使用了新的存储方式 导致无法同步茗伊配置的问题\n" +
-                "软件版本 0.7.3", "关于");
+                "0.8.0添加了预设功能，并且修复了一个从文件导入设置的bug\n" +
+                "软件版本 0.8.0", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)
@@ -929,6 +974,80 @@ namespace JX3SyncAssistant
             UploadProgressBar.Maximum = (int)e.TotalBytesToReceive;
             UploadProgressBar.Value = (int)e.BytesReceived;
             UploadProgressLabel.Content = string.Format("{0}K / {1}K", e.BytesReceived / 1024, e.TotalBytesToReceive / 1024);
+        }
+
+        private void SourcePresetSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string key = SourcePresetSearch.Text;
+            if (key.Length < 1)
+            {
+                return;
+            };
+            int i = 0;
+            foreach (Label role in SourcePresetList.Items)
+            {
+                if (((string)role.Content).IndexOf(key) != -1)
+                {
+                    SourcePresetList.SelectedIndex = i;
+                    SourcePresetList.ScrollIntoView(SourcePresetList.SelectedItem);
+                }
+                else
+                    i++;
+            }
+        }
+
+        private void SourcePresetList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+        
+        private void SourcePresetDelete_Click(object sender, RoutedEventArgs e)
+        {
+            int index = SourcePresetList.SelectedIndex;
+            Label label = (Label)SourcePresetList.SelectedItem;
+            if (label != null) {
+                string presetName = label.Content.ToString();
+                string filename = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(presetName)).Replace("/", "_");
+                if (File.Exists($@".\preset\{filename}.zip")) {
+                    MessageBoxResult mbr = MessageBox.Show($@"确定要删除预设{presetName}吗？该操作不可逆！", "要小心操作哦", MessageBoxButton.YesNo);
+                    if(mbr == MessageBoxResult.Yes)
+                    {
+                        File.Delete($@".\preset\{filename}.zip");
+                        SourcePresetList.Items.RemoveAt(index);
+                    }
+                }
+            } else {
+                return;
+            }
+        }
+
+        private void TargetPresetName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string key = TargetPresetName.Text;
+            if (key.Length < 1)
+            {
+                return;
+            };
+            int i = 0;
+            foreach (Label role in TargetPresetList.Items)
+            {
+                if (((string)role.Content).IndexOf(key) != -1)
+                {
+                    TargetPresetList.SelectedIndex = i;
+                    TargetPresetList.ScrollIntoView(TargetPresetList.SelectedItem);
+                }
+                else
+                    i++;
+            }
+        }
+
+        private void TargetPresetList_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            Label label = TargetPresetList.SelectedItem as Label;
+            if (label == null) { return; }
+            string presetName = (string)label.Content;
+            if (presetName == "") { return; };
+            TargetPresetName.Text = presetName;
         }
     }
 }
