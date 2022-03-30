@@ -529,6 +529,8 @@ namespace JX3SyncAssistant
             string result;
             result = GetGameFolderFromSettings(isExp, LogPanel);
             if (result != null) return result;
+            result = GetGameFolderFromSeasunGameReg(isExp, LogPanel);
+            if (result != null) return result;
             result = GetGameFolderFromInstallerReg(isExp, LogPanel);
             if (result != null) return result; 
             result = GetGameFolderFromKingsoftReg(isExp, LogPanel);
@@ -650,7 +652,7 @@ namespace JX3SyncAssistant
             }
             if (isExp)
             {
-                if (Directory.Exists($@"{basePath}\Game\JX3_EXP\bin\zhcn_exp"))
+                if (Directory.Exists($@"{basePath}"))
                 {
                     Log($"INFO: The determined path is \"{basePath}\"", LogPanel);
                     return $@"{basePath}";
@@ -658,10 +660,49 @@ namespace JX3SyncAssistant
             }
             else
             {
-                if (Directory.Exists($@"{basePath}\Game\JX3\bin\zhcn_hd"))
+                if (Directory.Exists($@"{basePath}"))
                 {
                     Log($"INFO: The determined path is \"{basePath}\"", LogPanel);
                     return $@"{basePath}";
+                }
+            }
+            Log("WARN: Sorry, Please select folder by yourself", LogPanel);
+            return null;
+        }
+
+        public static string GetGameFolderFromSeasunGameReg(bool isExp, TextBox LogPanel)
+        {
+            Log("INFO: Try to find the path through the register \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Kingsoft\\SeasunGame", LogPanel);
+            RegistryKey localMachine = Environment.Is64BitOperatingSystem == true ?
+                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
+                            RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+
+            string registry_key = !isExp ? @"SOFTWARE\Kingsoft\SeasunGame\JX3" : @"SOFTWARE\Kingsoft\SeasunGame\JX3_EXP";
+            string basePath;
+            try
+            {
+                basePath = localMachine.OpenSubKey(registry_key, false).GetValue("installPath").ToString();
+            }
+            catch
+            {
+                Log($"WARN: the register \"SOFTWARE\\Kingsoft\\SeasunGame\" not found", LogPanel);
+                Log("WARN: Sorry, Please select folder by yourself", LogPanel);
+                return null;
+            }
+            if (isExp)
+            {
+                if (Directory.Exists($@"{basePath}/bin/zhcn_exp"))
+                {
+                    Log($"INFO: The determined path is \"{basePath}\"", LogPanel);
+                    return $@"{basePath}bin/zhcn_exp";
+                }
+            }
+            else
+            {
+                if (Directory.Exists($@"{basePath}bin/zhcn_hd"))
+                {
+                    Log($"INFO: The determined path is \"{basePath}\"", LogPanel);
+                    return $@"{basePath}bin/zhcn_exp";
                 }
             }
             Log("WARN: Sorry, Please select folder by yourself", LogPanel);
