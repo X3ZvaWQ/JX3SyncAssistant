@@ -385,6 +385,9 @@ namespace JX3SyncAssistant
 
         public static void UnpackToUserdata(string TargetGameFolder, string zip, Dictionary<string, string> roleInfo, TextBox logPanel)
         {
+            bool isExp = false;
+            if (TargetGameFolder.Contains("zhcn_exp")) isExp = true;
+
             using (FileStream fs = new FileStream(zip, FileMode.Open))
             using (ZipArchive zipArchive = new ZipArchive(fs, ZipArchiveMode.Read))
             {
@@ -449,13 +452,15 @@ namespace JX3SyncAssistant
                     {
                         foreach (string file in files["my_config"])
                         {
+                            string filename = file;
+                            if (isExp) filename = file.Replace("zhcn_hd", "zhcn_exp");
                             try
                             {
                                 ZipArchiveEntry zipArchiveEntry = zipArchive.GetEntry(file);
-                                string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file);
+                                string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + filename);
                                 Directory.CreateDirectory(targetExtractFolder);
-                                zipArchiveEntry.ExtractToFile(TargetGameFolder + file, true);
-                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + file}\"", logPanel);
+                                zipArchiveEntry.ExtractToFile(TargetGameFolder + filename, true);
+                                Helper.Log($"INFO: File \"{file}\" has been extract to \"{TargetGameFolder + filename}\"", logPanel);
                             }
                             catch (Exception E)
                             {
@@ -499,7 +504,7 @@ namespace JX3SyncAssistant
                         {
                             try
                             {
-                                string file_name = file.Replace("roleId", $"{roleId}@zhcn_hd");
+                                string file_name = !isExp ? file.Replace("roleId", $"{roleId}@zhcn_hd") : file.Replace("roleId", $"{roleId}@zhcn_exp");
                                 ZipArchiveEntry zipArchiveEntry = zipArchive.GetEntry(file);
                                 string targetExtractFolder = Path.GetDirectoryName(TargetGameFolder + file_name);
                                 Directory.CreateDirectory(targetExtractFolder);

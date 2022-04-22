@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         x:Class="JX3SyncAssistant.MainWindow"
         mc:Ignorable="d"
-        Title="剑网三同步助手 - JX3SyncAssistant v0.8.1" Height="350" Width="710"
+        Title="剑网三同步助手 - JX3SyncAssistant v0.8.2" Height="390" Width="710"
         ResizeMode="CanMinimize"
         Icon="Snipaste_2021-04-26_18-07-50.png"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -335,7 +335,7 @@
                 </Grid>
                 <TextBox Name="TargetPresetName" Grid.Row="1" HorizontalAlignment="Left" Height="29" Margin="15,5,0,0" TextWrapping="Wrap"  Width="245"  VerticalAlignment="Top" ToolTip="新预设名，重复的预设名会覆盖" TextChanged="TargetPresetName_TextChanged"/>
             </Grid>
-            
+
             <!-- url -->
             <!-- left -->
             <Grid Name="SourceUrlGrid" HorizontalAlignment="Left" Height="198"  VerticalAlignment="Top" Width="260" Grid.Column="0" Visibility="Hidden" Grid.Row="1">

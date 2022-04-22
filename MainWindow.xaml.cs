@@ -16,7 +16,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.8.1"; 
+        public const string VERSION = "0.8.2"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -769,6 +769,7 @@ namespace JX3SyncAssistant
                 "0.7.3修复了茗伊插件最近更新 插件配置文件使用了新的存储方式 导致无法同步茗伊配置的问题\n" +
                 "0.8.0添加了预设功能，并且修复了一个从文件导入设置的bug\n" +
                 "0.8.1添加体服新客户端的数据路径获取\n" +
+                "0.8.2修了茗伊插件配置同步体服无效的bug,修修补补又一个版本Orz\n" + 
                 "软件版本 0.8.1", "关于");
         }
 
