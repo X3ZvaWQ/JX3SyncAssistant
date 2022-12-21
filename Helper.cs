@@ -254,6 +254,9 @@ namespace JX3SyncAssistant
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\memo.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\my_targetmon.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\settings.db",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\settings.udb",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\userdata.db",
+                            $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\userdata.udb",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\storageversion.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\config\tutorialed.jx3dat",
                             $@"\interface\MY#DATA\{roleId}@zhcn_hd\manifest.jx3dat"
@@ -309,6 +312,9 @@ namespace JX3SyncAssistant
                         string[] file_list =
                         {
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\settings.db",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\settings.udb",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\userdata.db",
+                            @"\interface\MY#DATA\!all-users@zhcn_hd\config\userdata.udb",
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\yy.jx3dat",
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\show_notify.jx3dat",
                             @"\interface\MY#DATA\!all-users@zhcn_hd\config\serendipity_autoshare.jx3dat",
@@ -397,7 +403,7 @@ namespace JX3SyncAssistant
                     Profile profile = JsonSerializer.Deserialize<Profile>(File.ReadAllText("profile.json"));
                     File.Delete("profile.json");
                     if(profile.version != MainWindow.VERSION) {
-                        Log("WARN: The description document version of the data is inconsistent with the program version. This may cause data migration errors.", logPanel);
+                        Log("警告，用户数据文件版本低于当前程序版本，可能会导致迁移错误.", logPanel);
                     }
                     Dictionary<string, string[]> files = profile.files;
                     //释放userdata的文件

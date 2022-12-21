@@ -16,7 +16,7 @@ namespace JX3SyncAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string VERSION = "0.8.2"; 
+        public const string VERSION = "0.8.3"; 
         public string NewVersionBody = "";
         public string NewVersionUrl = "";
         public string NewVersionName = "";
@@ -753,7 +753,7 @@ namespace JX3SyncAssistant
         {
             MessageBox.Show("起因是玩体验服的时候玩的心法太多每次移文件移到吐\n" +
                 "作品会开源在github，我的主页是 https://github.com/X3ZvaWQ \n" +
-                "游戏id 秀秀不咕 坐标唯满侠 是一个秀萝 \n" +
+                "游戏id 秀秀不咕 坐标梦江南 是一个秀萝 \n" +
                 "如果有什么意见的话可以和我提，也可以自己改之后pr，第一次写C#也是第一次用WPF写窗口程序，可能代码很难看敬请谅解（x \n" +
                 "根据MIT开源许可证，随便你怎么玩（x \n" +
                 "0.2.0增加的内容主要有允许自定义是否关闭服务器同步、允许同步插件设置等。\n" +
@@ -770,7 +770,8 @@ namespace JX3SyncAssistant
                 "0.8.0添加了预设功能，并且修复了一个从文件导入设置的bug\n" +
                 "0.8.1添加体服新客户端的数据路径获取\n" +
                 "0.8.2修了茗伊插件配置同步体服无效的bug,修修补补又一个版本Orz\n" + 
-                "软件版本 0.8.1", "关于");
+                "0.8.3修了茗伊插件配置同步的问题（应该）\n" +
+                "当前软件版本 0.8.3", "关于");
         }
 
         private void LogButton_Click(object sender, RoutedEventArgs e)
